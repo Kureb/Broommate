@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Overview")); // Or name of the group from DB
+        tabLayout.addTab(tabLayout.newTab().setText("Members")); // Or name of the group from DB
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("Tasks"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);

@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -45,7 +47,7 @@ public class LoginActivity extends Activity {
         loginButton.setReadPermissions("public_profile");
 
         //if already logged in, start next activity
-        if (AccessToken.getCurrentAccessToken()!=null){
+        if (AccessToken.getCurrentAccessToken()!=null) {
             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(myIntent);
         }
@@ -53,6 +55,7 @@ public class LoginActivity extends Activity {
 
 
         //button to log in facebook
+        //when logged in, send to next activity
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -97,21 +100,7 @@ public class LoginActivity extends Activity {
             }
         });
 
-        /*
-        //cancel button
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Go back to home
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_HOME);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                // or just finish(); ? to stop the current activity, some like pressing back key
-            }
-        });
 
-*/
     }
 
 
@@ -133,12 +122,5 @@ public class LoginActivity extends Activity {
         toast.show();
     }
 
-    /*
-    private void displaySnackbar(String text) {
-        Snackbar snackbar = Snackbar
-                .make((RelativeLayout) findViewById(R.id.rl), text, Snackbar.LENGTH_LONG);
 
-        snackbar.show();
-    }
-    */
 }
