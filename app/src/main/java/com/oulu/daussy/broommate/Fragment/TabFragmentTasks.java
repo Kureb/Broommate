@@ -4,12 +4,12 @@ package com.oulu.daussy.broommate.Fragment;
  * Created by daussy on 14/03/16.
  */
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TabFragmentTasks extends Fragment {
+public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     // Button which allow us to add a new task
     private FloatingActionButton addButton;
@@ -45,6 +45,8 @@ public class TabFragmentTasks extends Fragment {
     // to fetch the data
     private String JSON_STRING;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
     public TabFragmentTasks() { }
 
@@ -54,6 +56,7 @@ public class TabFragmentTasks extends Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_tasks, container, false);
 
         addButton = (FloatingActionButton) view.findViewById(R.id.fab);
+
 
         addButton.setOnClickListener(new View.OnClickListener(){
             // When we click on the button, we are sent the activity which allows us to add a new task
@@ -65,6 +68,20 @@ public class TabFragmentTasks extends Fragment {
         });
 
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+                fetchTask();
+            }
+        });
+
+
+        addButton.bringToFront();
 
         /*
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -85,7 +102,8 @@ public class TabFragmentTasks extends Fragment {
         });
         */
         //Load data
-        getJSON();
+
+        //fetchTask();
 
         //listView.expandGroup(0);
 
@@ -150,20 +168,22 @@ public class TabFragmentTasks extends Fragment {
     }
 
 
-    private void getJSON(){
+    private void fetchTask(){
         class GetJSON extends AsyncTask<Void,Void,String> {
 
-            ProgressDialog loading;
+            //ProgressDialog loading;
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(getContext(), "Fetching Data", "Please wait...", false, false);
+                swipeRefreshLayout.setRefreshing(true);
+                //loading = ProgressDialog.show(getContext(), "Fetching Data", "Please wait...", false, false);
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                loading.dismiss();
+                swipeRefreshLayout.setRefreshing(false);
+                //loading.dismiss();
                 JSON_STRING = s;
                 prepareListData();
             }
@@ -179,4 +199,8 @@ public class TabFragmentTasks extends Fragment {
         gj.execute();
     }
 
+    @Override
+    public void onRefresh() {
+        fetchTask();
+    }
 }
