@@ -6,10 +6,12 @@ package com.oulu.daussy.broommate;
  */
 public class Config {
 
+    public static final String IP_SERVER            =   "http://192.168.0.101:8888/";
+
     //Address of our scripts of the CRUD
-    public static final String URL_ADD_TASK         =   "http://192.168.0.102:8888/Broommate/addTask.php";
-    public static final String URL_UPDATE_TASK      =   "http://192.168.0.102:8888/Broommate/updateTask.php?id=";
-    public static final String URL_GET_ALL_TASKS    =   "http://192.168.0.102:8888/Broommate/getTasks.php?id_group=";
+    public static final String URL_ADD_TASK         =   IP_SERVER + "Broommate/addTask.php";
+    public static final String URL_UPDATE_TASK      =   IP_SERVER + "Broommate/updateTask.php?id=";
+    public static final String URL_GET_ALL_TASKS    =   IP_SERVER + "Broommate/getTasks.php?id_group=";
 
     //Keys that will be used to send request to php scripts
     public static final String KEY_TASK_ID          =   "id";
