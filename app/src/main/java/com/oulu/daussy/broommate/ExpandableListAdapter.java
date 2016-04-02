@@ -2,7 +2,8 @@ package com.oulu.daussy.broommate;
 
 /**
  * Created by daussy on 25/03/16.
- * http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
+ * Adaptation of http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
+ * to fit the needs of our listview expandable
  */
 import java.util.HashMap;
 import java.util.List;
@@ -20,19 +21,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
+    private HashMap<String, List<Task>> _listDataChild;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+                                 HashMap<String, List<Task>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosititon) {
+    public Object getChild(int groupPosition, int childPosition) {
         return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+                .get(childPosition);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final Task taskToShow = (Task) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -52,10 +53,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_item, null);
         }
 
-        TextView txtListChild = (TextView) convertView
+        TextView txtTitleTask = (TextView) convertView
                 .findViewById(R.id.taskName);
 
-        txtListChild.setText(childText);
+        TextView txtPriorityTask = (TextView) convertView
+                .findViewById(R.id.taskPriority);
+
+        txtTitleTask.setText(taskToShow.getTitle());
+        txtPriorityTask.setText(taskToShow.getPriority());
+
         return convertView;
     }
 
@@ -90,10 +96,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
 
-        TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.lblListHeader);
-        lblListHeader.setTypeface(null, Typeface.BOLD);
-        lblListHeader.setText(headerTitle);
+        TextView taskCategorie = (TextView) convertView
+                .findViewById(R.id.taskCategorie);
+        taskCategorie.setTypeface(null, Typeface.BOLD);
+        taskCategorie.setText(headerTitle);
 
         return convertView;
     }

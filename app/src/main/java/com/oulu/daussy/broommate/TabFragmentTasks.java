@@ -3,20 +3,19 @@ package com.oulu.daussy.broommate;
 /**
  * Created by daussy on 14/03/16.
  */
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,28 +27,31 @@ import java.util.List;
 
 public class TabFragmentTasks extends Fragment {
 
+    // Button which allow us to add a new task
     private FloatingActionButton addButton;
+    // Custom adapter to create an Expandable ListView
     private ExpandableListAdapter listAdapter;
+    // Expandable list view which will contains the task
     private ExpandableListView listView;
+    // DataHeader are the main categories (here, todo, doing, done)
     private List<String> listDataHeader;
-    private HashMap<String, List<String>> listDataChild;
+    // DataChild contains the object to add in the categories
+    private HashMap<String, List<Task>> listDataChild;
+    // to fetch the data
     private String JSON_STRING;
-    private TextView taskName;
-    private TextView taskPriority;
 
-    public TabFragmentTasks() {
-    }
+
+    public TabFragmentTasks() { }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_fragment_tasks, container, false);
+
         addButton = (FloatingActionButton) view.findViewById(R.id.fab);
-        taskName = (TextView) view.findViewById(R.id.taskName);
-        taskPriority = (TextView) view.findViewById(R.id.taskPriority);
 
         addButton.setOnClickListener(new View.OnClickListener(){
-
+            // When we click on the button, we are sent the activity which allows us to add a new task
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(getActivity().getApplicationContext(), AddTaskActivity.class);
@@ -57,19 +59,9 @@ public class TabFragmentTasks extends Fragment {
             }
         });
 
-        // get the listview
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
 
         /*
-        // preparing list data
-        prepareListDataBak();
-
-        listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listDataChild);
-
-        // setting list adapter
-        listView.setAdapter(listAdapter);
-        listView.expandGroup(0);
-
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
@@ -87,95 +79,56 @@ public class TabFragmentTasks extends Fragment {
             }
         });
         */
+        //Load data
         getJSON();
+
         //listView.expandGroup(0);
 
         return view;
     }
-
-    private void prepareListDataBak() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
-
-        // Adding child data
-        listDataHeader.add("TODO");
-        listDataHeader.add("DOING");
-        listDataHeader.add("DONE");
-
-        // Adding child data
-        List<String> todo = new ArrayList<String>();
-        todo.add("The Shawshank Redemption");
-        todo.add("The Godfather");
-        todo.add("The Godfather: Part II");
-        todo.add("Pulp Fiction");
-        todo.add("The Good, the Bad and the Ugly");
-        todo.add("The Dark Knight");
-        todo.add("12 Angry Men");
-
-        List<String> doing = new ArrayList<String>();
-        doing.add("The Conjuring");
-        doing.add("Despicable Me 2");
-        doing.add("Turbo");
-        doing.add("Grown Ups 2");
-        doing.add("Red 2");
-        doing.add("The Wolverine");
-
-        List<String> done = new ArrayList<String>();
-        done.add("2 Guns");
-        done.add("The Smurfs 2");
-        done.add("The Spectacular Now");
-        done.add("The Canyons");
-        done.add("Europa Report");
-
-        listDataChild.put(listDataHeader.get(0), todo);
-        listDataChild.put(listDataHeader.get(1), doing);
-        listDataChild.put(listDataHeader.get(2), done);
-    }
-
 
     private void prepareListData() {
         JSONObject jsonObject = null;
         ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String, String>>();
 
         listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+        listDataChild = new HashMap<String, List<Task>>();
 
         listDataHeader.add("TODO");
         listDataHeader.add("DOING");
         listDataHeader.add("DONE");
 
-        List<String> todo = new ArrayList<String>();
-        List<String> doing = new ArrayList<String>();
-        List<String> done = new ArrayList<String>();
+        List<Task> todo = new ArrayList<Task>();
+        List<Task> doing = new ArrayList<Task>();
+        List<Task> done = new ArrayList<Task>();
+
+
 
         try {
             jsonObject = new JSONObject(JSON_STRING);
             JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);
 
-            for(int i = 0; i<result.length(); i++){
+            for(int i = 0; i < result.length(); i++){
                 JSONObject jo = result.getJSONObject(i);
-                String id = jo.getString(Config.KEY_TASK_ID);
-                String name = jo.getString(Config.KEY_TASK_NAME);
-                String priority = jo.getString(Config.KEY_TASK_PRIORITY);
-                String state = jo.getString(Config.KEY_TASK_STATE);
+                Task taskToSort = new Task();
 
-                HashMap<String,String> task = new HashMap<>();
-                task.put(Config.KEY_TASK_ID,id);
-                task.put(Config.KEY_TASK_NAME,name);
+                taskToSort.setId(Integer.parseInt(jo.getString(Config.KEY_TASK_ID)));
+                taskToSort.setTitle(jo.getString(Config.KEY_TASK_NAME));
+                taskToSort.setPriority(jo.getString(Config.KEY_TASK_PRIORITY));
+                taskToSort.setState(jo.getString(Config.KEY_TASK_STATE));
 
-                switch (state) {
+                switch (taskToSort.getState()) {
                     case "TODO":
-                        todo.add(name);
+                        todo.add(taskToSort);
                         break;
                     case "DOING":
-                        doing.add(name);
+                        doing.add(taskToSort);
                         break;
                     case "DONE":
-                        done.add(name);
+                        done.add(taskToSort);
                         break;
 
                 }
-                //list.add(task);
             }
 
             listDataChild.put(listDataHeader.get(0), todo);
@@ -187,16 +140,8 @@ public class TabFragmentTasks extends Fragment {
         }
 
         listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listDataChild);
-/*
-        ListAdapter adapter = new SimpleAdapter(
-                TabFragmentTasks.this, list, R.layout.list_item,
-                new String[]{Config.TAG_TASK_ID, Config.TAG_TASK_NAME},
-                new int[]{R.id.lblListItem, R.id.lblListItem2});
-                */
 
         listView.setAdapter(listAdapter);
-
-
     }
 
 
@@ -207,7 +152,7 @@ public class TabFragmentTasks extends Fragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(getContext(),"Fetching Data","Wait...",false,false);
+                loading = ProgressDialog.show(getContext(), "Fetching Data", "Please wait...", false, false);
             }
 
             @Override
