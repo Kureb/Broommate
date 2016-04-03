@@ -63,12 +63,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtPriorityTask = (TextView) convertView
                 .findViewById(R.id.taskPriority);
 
-        ProfilePictureView profilePicture = (ProfilePictureView) convertView
-                .findViewById(R.id.avatar);
+        ProfilePictureView ownerPicture = (ProfilePictureView) convertView
+                .findViewById(R.id.owner);
+
+        ProfilePictureView workerPicture = (ProfilePictureView) convertView
+                .findViewById(R.id.worker);
+
+
 
         txtTitleTask.setText(taskToShow.getTitle());
         txtPriorityTask.setText(taskToShow.getPriority());
-        profilePicture.setProfileId(taskToShow.getOwner());
+        ownerPicture.setProfileId(taskToShow.getOwner());
+
+        if (!taskToShow.getWorker().isEmpty())
+            workerPicture.setProfileId(taskToShow.getWorker());
+
+        if (taskToShow.getState().equals("TODO"))
+            workerPicture.setVisibility(View.INVISIBLE);
+        //profilePicture.setVisibility(View.GONE); //View.INVISIBLE
 
         return convertView;
     }

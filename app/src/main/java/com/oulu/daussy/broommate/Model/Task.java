@@ -10,6 +10,15 @@ public class Task {
     private String state;
     private String title;
     private String owner;
+    private String worker;
+
+    public String getWorker() {
+        return worker;
+    }
+
+    public void setWorker(String worker) {
+        this.worker = worker;
+    }
 
     public String getOwner() {
         return owner;
