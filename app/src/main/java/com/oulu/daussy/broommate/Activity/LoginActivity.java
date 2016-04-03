@@ -1,13 +1,14 @@
 package com.oulu.daussy.broommate.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -19,9 +20,16 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.oulu.daussy.broommate.Configuration.Config;
+import com.oulu.daussy.broommate.Configuration.RequestHandler;
+import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 
 public class LoginActivity extends Activity {
@@ -30,6 +38,7 @@ public class LoginActivity extends Activity {
     private Button cancelButton;
     private AccessToken accessToken;
     private CallbackManager callbackManager;
+    public User currentUser = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,8 @@ public class LoginActivity extends Activity {
 
         //if already logged in, start next activity
         if (AccessToken.getCurrentAccessToken()!=null) {
+            populateUser(); //Not necessary because method is called when user log in
+                            //but useful for development
             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(myIntent);
         }
@@ -71,7 +82,7 @@ public class LoginActivity extends Activity {
                             public void onCompleted(
                                     JSONObject object,
                                     GraphResponse response) {
-                                Log.v("LoginActivity", response.toString());
+                                populateUser();
                             }
                         }
 
@@ -103,8 +114,69 @@ public class LoginActivity extends Activity {
 
     }
 
+    private void populateUser() {
+        GraphRequest request = GraphRequest.newMeRequest(
+                accessToken,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        try {
+                            currentUser.setName(object.getString("name"));
+                            currentUser.setFacebook_id(object.getString("id"));
+                            addUser(currentUser);
+                        } catch (JSONException e) { }
+                    }
+                }
+        );
 
-//    @Override
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name" );
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private void addUser(User currentUser) {
+        final String name = currentUser.getName();
+        final String facebook_id = currentUser.getFacebook_id();
+
+        class AddUser extends AsyncTask<Void, Void, String>{
+
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                //loading = ProgressDialog.show(LoginActivity.this,"Adding user in progress","Please wait...",false,false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                //loading.dismiss();
+                Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
+                //Snackbar.make(findViewById(android.R.id.content), s, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+
+            @Override
+            protected String doInBackground(Void... v) {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put(Config.KEY_USER_NAME, name);
+                params.put(Config.KEY_USER_FACEBOOK_ID, facebook_id);
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_ADD_USER, params);
+
+                return res;
+            }
+        }
+
+        AddUser au = new AddUser();
+        au.execute();
+    }
+
+
+    //    @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);

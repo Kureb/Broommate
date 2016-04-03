@@ -9,7 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.oulu.daussy.broommate.Fragment.TabFragmentTasks;
 import com.oulu.daussy.broommate.Helper.PagerAdapter;
 import com.oulu.daussy.broommate.R;
@@ -51,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        AccessToken token = AccessToken.getCurrentAccessToken();
+        if (token != null) {
+            Log.d("AccessToken", "" + token.getToken());
+        }
     }
 
     @Override
