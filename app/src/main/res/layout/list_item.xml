@@ -2,17 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:facebook="http://schemas.android.com/tools"
     android:gravity="left|center"
     android:paddingBottom="5px"
     android:paddingTop="5px"
     android:paddingLeft="5px">
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/avatar"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_marginRight="6dip"
-        android:src="@drawable/com_facebook_button_icon_white" />
+        android:src="@drawable/com_facebook_button_icon_white" />-->
+
+    <com.facebook.login.widget.ProfilePictureView
+        android:id="@+id/avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true" />
 
     <LinearLayout
         android:layout_width="0dip"

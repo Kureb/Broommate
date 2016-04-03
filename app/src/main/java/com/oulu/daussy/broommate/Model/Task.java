@@ -9,6 +9,15 @@ public class Task {
     private String priority;
     private String state;
     private String title;
+    private String owner;
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
     public String getTitle() {
         return title;

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import com.facebook.login.widget.ProfilePictureView;
 import com.oulu.daussy.broommate.Model.Task;
 import com.oulu.daussy.broommate.R;
 
@@ -62,8 +63,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtPriorityTask = (TextView) convertView
                 .findViewById(R.id.taskPriority);
 
+        ProfilePictureView profilePicture = (ProfilePictureView) convertView
+                .findViewById(R.id.avatar);
+
         txtTitleTask.setText(taskToShow.getTitle());
         txtPriorityTask.setText(taskToShow.getPriority());
+        profilePicture.setProfileId(taskToShow.getOwner());
 
         return convertView;
     }

@@ -139,6 +139,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 taskToSort.setTitle(jo.getString(Config.KEY_TASK_NAME));
                 taskToSort.setPriority(jo.getString(Config.KEY_TASK_PRIORITY));
                 taskToSort.setState(jo.getString(Config.KEY_TASK_STATE));
+                taskToSort.setOwner(jo.getString(Config.KEY_TASK_OWNER));
 
                 switch (taskToSort.getState()) {
                     case "TODO":
