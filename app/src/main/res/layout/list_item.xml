@@ -15,13 +15,13 @@
         android:layout_marginRight="6dip"
         android:src="@drawable/com_facebook_button_icon_white" />-->
 
-    <com.facebook.login.widget.ProfilePictureView
+    <com.oulu.daussy.broommate.Helper.ProfilePictureView
         android:id="@+id/owner"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerInParent="true" />
 
-    <com.facebook.login.widget.ProfilePictureView
+    <com.oulu.daussy.broommate.Helper.ProfilePictureView
         android:id="@+id/worker"
         android:layout_width="50dp"
         android:layout_height="50dp"

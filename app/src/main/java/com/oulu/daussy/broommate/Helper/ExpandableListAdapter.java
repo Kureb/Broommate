@@ -9,14 +9,23 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.login.widget.ProfilePictureView;
+
 import com.oulu.daussy.broommate.Model.Task;
 import com.oulu.daussy.broommate.R;
 
@@ -89,6 +98,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 ownerPicture.setVisibility(View.VISIBLE);
                 break;
         }
+
+
         //profilePicture.setVisibility(View.GONE); //View.INVISIBLE
 
         return convertView;
