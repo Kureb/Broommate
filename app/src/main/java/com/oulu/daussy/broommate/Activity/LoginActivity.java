@@ -57,8 +57,8 @@ public class LoginActivity extends Activity {
 
         //if already logged in, start next activity
         if (AccessToken.getCurrentAccessToken()!=null) {
-            populateUser(); //Not necessary because method is called when user log in
-                            //but useful for development
+            //populateUser(); //Not necessary here because method is called when user log in
+                            //but may be useful for development
             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(myIntent);
         }
@@ -153,7 +153,7 @@ public class LoginActivity extends Activity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 //loading.dismiss();
-                Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
+                //Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
                 //Snackbar.make(findViewById(android.R.id.content), s, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
 
