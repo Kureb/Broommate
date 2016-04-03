@@ -78,8 +78,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (!taskToShow.getWorker().isEmpty())
             workerPicture.setProfileId(taskToShow.getWorker());
 
-        if (taskToShow.getState().equals("TODO"))
-            workerPicture.setVisibility(View.INVISIBLE);
+        switch (taskToShow.getState()) {
+            case "TODO":
+                workerPicture.setVisibility(View.INVISIBLE);
+                ownerPicture.setVisibility(View.VISIBLE);
+                break;
+            case "DOING":
+            case "DONE":
+                workerPicture.setVisibility(View.VISIBLE);
+                ownerPicture.setVisibility(View.VISIBLE);
+                break;
+        }
         //profilePicture.setVisibility(View.GONE); //View.INVISIBLE
 
         return convertView;
