@@ -22,6 +22,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
+import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
@@ -38,7 +39,7 @@ public class LoginActivity extends Activity {
     private Button cancelButton;
     private AccessToken accessToken;
     private CallbackManager callbackManager;
-    public User currentUser = new User();
+    public CurrentUser currentUser = CurrentUser.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +58,7 @@ public class LoginActivity extends Activity {
 
         //if already logged in, start next activity
         if (AccessToken.getCurrentAccessToken()!=null) {
-            //populateUser(); //Not necessary here because method is called when user log in
-                            //but may be useful for development
+            populateUser();
             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(myIntent);
         }
@@ -83,6 +83,7 @@ public class LoginActivity extends Activity {
                                     JSONObject object,
                                     GraphResponse response) {
                                 populateUser();
+                                addUser(currentUser);
                             }
                         }
 
@@ -123,7 +124,6 @@ public class LoginActivity extends Activity {
                         try {
                             currentUser.setName(object.getString("name"));
                             currentUser.setFacebook_id(object.getString("id"));
-                            addUser(currentUser);
                         } catch (JSONException e) { }
                     }
                 }
