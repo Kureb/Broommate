@@ -58,43 +58,5 @@ public class Config {
     public static final String KEY_USER_GROUP_ID    =   "group";
     public static final String KEY_USER_FACEBOOK_ID =   "facebook_id";
     public static final String KEY_USER_PICTURE     =   "picture";
-
-
-    /*********** FACEBOOK ****************/
-    public static final String TAG_FB_DATA          =   "data";
-    public static final String getProfilePicture(int facebook_id){
-        return "http://graph.facebook.com/"+ facebook_id +"/picture?type=large";
-
-    }
-
-    public static final Bitmap getFacebookProfilePicture(String userID) throws SocketException, SocketTimeoutException, MalformedURLException, IOException, Exception
-    {
-        String imageURL;
-
-        Bitmap bitmap = null;
-        imageURL = "http://graph.facebook.com/"+userID+"/picture?type=large";
-        InputStream in = (InputStream) new URL(imageURL).getContent();
-        bitmap = BitmapFactory.decodeStream(in);
-
-        return bitmap;
-
-        /**
-         * Or <com.facebook.login.widget.ProfilePictureView
-         android:id="@+id/image"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_centerInParent="true"
-         facebook:preset_size="small"/>
-
-         ProfilePictureView profilePictureView;
-
-         profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
-
-         profilePictureView.setProfileId(userId);
-         */
-    }
-
-
-
-
+    
 }
