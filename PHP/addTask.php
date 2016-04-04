@@ -9,9 +9,10 @@
     $priority = $_POST['priority'];
     //$id_group = $_POST['id_group'];
     $state = $_POST['state'];
+    $owner = $_POST['owner'];
 
-    $sql = "INSERT INTO tasks (name, priority, state)
-            VALUES ('$name', '$priority', '$state')"; //add time through android or php ?
+    $sql = "INSERT INTO tasks (name, priority, state, owner)
+            VALUES ('$name', '$priority', '$state', '$owner')"; //add time through android or php ?
 
 
     require_once('dbConnect.php');

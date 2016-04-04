@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
+import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.R;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +30,7 @@ public class AddTaskActivity extends AppCompatActivity {
     private Button cancelButton;
     private Button addButton;
     private EditText titleTask;
+    private CurrentUser currentUser = CurrentUser.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,7 @@ public class AddTaskActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "We'll add the task", Snackbar.LENGTH_LONG).setAction("Action",null).show();
-                addTask();
+                addTask(v);
             }
         });
 
@@ -76,27 +77,31 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
 
-    private void addTask() {
+    private void addTask(final View v) {
         final String name = titleTask.getText().toString().trim();
         final String priority = spinner.getSelectedItem().toString();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         final String currentDateandTime = sdf.format(new Date());
+        final String owner = currentUser.getFacebook_id();
+
 
         class AddTask extends AsyncTask<Void, Void, String>{
 
-            ProgressDialog loading;
+            //ProgressDialog loading;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(AddTaskActivity.this,"Adding task in progress","Please wait...",false,false);
+                //Snackbar.make(v, "We are adding the task", Snackbar.LENGTH_LONG).setAction("Action",null).show();
+                //loading = ProgressDialog.show(AddTaskActivity.this,"Adding task in progress","Please wait...",false,false);
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                loading.dismiss();
-                Toast.makeText(AddTaskActivity.this, s, Toast.LENGTH_LONG).show();
+                Snackbar.make(v, s, Snackbar.LENGTH_LONG).setAction("Action",null).show();
+
+                //loading.dismiss();
             }
 
             @Override
@@ -105,6 +110,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
                 params.put(Config.KEY_TASK_NAME, name);
                 params.put(Config.KEY_TASK_PRIORITY, priority);
+                params.put(Config.KEY_TASK_OWNER, owner);
                 params.put(Config.KEY_TASK_STATE, "TODO");
 
                 RequestHandler rh = new RequestHandler();
