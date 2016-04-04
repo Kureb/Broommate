@@ -2,17 +2,14 @@
 
   if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    // Getting values
-    //if (isset($_POST['name']))
-    $name = $_POST['name'];
-    //$owner = $_POST['owner'];
-    $priority = $_POST['priority'];
-    //$id_group = $_POST['id_group'];
-    $state = $_POST['state'];
-    $owner = $_POST['owner'];
+    $name       =   $_POST['name'];
+    $priority   =   $_POST['priority'];
+    $state      =   "TODO";
+    $owner      =   $_POST['owner'];
+    $date_start =   date ("Y-m-d H:i:s");
 
-    $sql = "INSERT INTO tasks (name, priority, state, owner)
-            VALUES ('$name', '$priority', '$state', '$owner')"; //add time through android or php ?
+    $sql = "INSERT INTO tasks (name, priority, state, owner, date_start)
+            VALUES ('$name', '$priority', '$state', '$owner', '$date_start')";
 
 
     require_once('dbConnect.php');
