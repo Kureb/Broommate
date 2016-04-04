@@ -5,29 +5,21 @@ package com.oulu.daussy.broommate.Helper;
  * Adaptation of http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
  * to fit the needs of our listview expandable
  */
-import java.util.HashMap;
-import java.util.List;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.oulu.daussy.broommate.Model.Task;
 import com.oulu.daussy.broommate.R;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -69,19 +61,18 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtTitleTask = (TextView) convertView
                 .findViewById(R.id.taskName);
 
-        TextView txtPriorityTask = (TextView) convertView
-                .findViewById(R.id.taskPriority);
-
         ProfilePictureView ownerPicture = (ProfilePictureView) convertView
                 .findViewById(R.id.owner);
 
         ProfilePictureView workerPicture = (ProfilePictureView) convertView
                 .findViewById(R.id.worker);
 
+        TextView priorityColorBar = (TextView) convertView
+                .findViewById(R.id.colorBar);
+
 
 
         txtTitleTask.setText(taskToShow.getTitle());
-        txtPriorityTask.setText(taskToShow.getPriority());
         ownerPicture.setProfileId(taskToShow.getOwner());
 
         if (!taskToShow.getWorker().isEmpty())
@@ -96,6 +87,18 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             case "DONE":
                 workerPicture.setVisibility(View.VISIBLE);
                 ownerPicture.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        switch (taskToShow.getPriority()) {
+            case "LOW":
+                priorityColorBar.setBackgroundColor(Color.GREEN);
+                break;
+            case "MEDIUM":
+                priorityColorBar.setBackgroundColor(Color.YELLOW);
+                break;
+            case "HIGH":
+                priorityColorBar.setBackgroundColor(Color.RED);
                 break;
         }
 

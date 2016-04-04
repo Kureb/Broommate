@@ -8,12 +8,11 @@
     android:paddingTop="5px"
     android:paddingLeft="5px">
 
-    <!--<ImageView
-        android:id="@+id/avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_marginRight="6dip"
-        android:src="@drawable/com_facebook_button_icon_white" />-->
+    <TextView
+        android:id="@+id/colorBar"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent" />
 
     <com.oulu.daussy.broommate.Helper.ProfilePictureView
         android:id="@+id/owner"
@@ -25,7 +24,7 @@
         android:id="@+id/worker"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="-15dp"
         android:layout_marginRight="5dp"
         android:layout_centerInParent="true" />
 
@@ -40,13 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="17dip"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/taskPriority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="8dip" />
+            android:gravity="center"
+            android:text="task title" />
 
     </LinearLayout>
 
