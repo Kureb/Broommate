@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,10 +50,12 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     private HashMap<String, List<Task>> listDataChild;
     // to fetch the data
     private String JSON_STRING;
-
+    // to refresh by pulling down the view
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    // to remember on which child we clicked last
     private View lastClicked;
+    // to remember which group are expanded or nto
+    private boolean[] expandedGroup;
 
 
     public TabFragmentTasks() { }
@@ -60,6 +64,9 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_fragment_tasks, container, false);
+
+        expandedGroup = new boolean[3];
+        Arrays.fill(expandedGroup, Boolean.FALSE);
 
         addButton = (FloatingActionButton) view.findViewById(R.id.fab);
 
@@ -88,6 +95,22 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
 
         addButton.bringToFront();
+
+        // Listview Group expanded listener
+        listView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                expandedGroup[groupPosition] = Boolean.TRUE;
+            }
+        });
+
+        // Listview Group collasped listener
+        listView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                expandedGroup[groupPosition] = Boolean.FALSE;
+            }
+        });
 
 
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -148,6 +171,10 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                                     Snackbar.make(v, s, Snackbar.LENGTH_LONG).show();
                                 }
                             }).show();
+
+
+                            //fetchTask();
+
                         }
                     });
                 }
@@ -159,12 +186,11 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
         //fetchTask();
 
-        //listView.expandGroup(0);
-
         return view;
     }
 
     private void prepareListData() {
+
         JSONObject jsonObject = null;
         ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String, String>>();
 
@@ -221,6 +247,12 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listDataChild);
 
         listView.setAdapter(listAdapter);
+
+        for (int i = 0; i < expandedGroup.length; i++ ) {
+            if (expandedGroup[i])
+                listView.expandGroup(i);
+        }
+
     }
 
 
