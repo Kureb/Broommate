@@ -6,17 +6,24 @@ package com.oulu.daussy.broommate.Fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oulu.daussy.broommate.Activity.AddTaskActivity;
@@ -35,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.graphics.Color.YELLOW;
 
 public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -143,7 +152,77 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                         @Override
                         public void onClick(View v) {
                             ProfilePictureView profilePictureView = (ProfilePictureView)v.findViewById(R.id.owner);
-                            Toast.makeText(getContext(), "owner", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getContext(), "owner", Toast.LENGTH_LONG).show();
+                            /*
+                            Snackbar snackbar = Snackbar.make(v, "Created by " + task.getOwner_name()
+                                            + " \non " + task.getDate_start()
+                                            + " \nwith " + task.getPriority() + " priority.",
+                                    Snackbar.LENGTH_INDEFINITE);
+
+                            View snackbarView = snackbar.getView();
+                            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                            final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+                            textView.setMaxLines(3);  // show multiple line
+                            */
+
+                            int priority = 0;
+                            switch (task.getPriority()){
+                                case "LOW":
+                                    priority = Color.GREEN;
+                                    break;
+                                case "MEDIUM":
+                                    priority = Color.YELLOW;
+                                    break;
+                                case "HIGH":
+                                    priority = Color.RED;
+                                    break;
+                            }
+                            String date = task.getDate_start().split(" ")[0];
+                            String time = task.getDate_start().split(" ")[1];
+
+                            //Making multi colored text color of SnackBar text
+                            SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+                            snackbarText.append("Created by ");
+                            int boldStart = snackbarText.length();
+                            snackbarText.append(task.getOwner_name());
+                            //snackbarText.setSpan(new ForegroundColorSpan(Color.BLUE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            snackbarText.append("\non ");
+                            boldStart = snackbarText.length();
+                            snackbarText.append(date);
+                            //snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            snackbarText.append(" at ");
+                            boldStart = snackbarText.length();
+                            snackbarText.append(time);
+                            //snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+                            snackbarText.append(" \nwith a ");
+                            boldStart = snackbarText.length();
+                            snackbarText.append(task.getPriority());
+                            //snackbarText.setSpan(new ForegroundColorSpan(priority), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                            snackbarText.append(" priority.");
+
+                            Snackbar snackbar = Snackbar.make(v, snackbarText, Snackbar.LENGTH_INDEFINITE);
+                            View snackbarView = snackbar.getView();
+                            snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                            //final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+                            textView.setMaxLines(3);  // show multiple line
+                            snackbar.show();
+                            /*
+                            snackbar.setAction("Ok", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    snackbarActionButton.performClick();
+                                }
+                            });
+                            */
+                            //snackbar.show();
                         }
                     });
 
@@ -221,6 +300,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 taskToSort.setState(jo.getString(Config.KEY_TASK_STATE));
                 taskToSort.setOwner(jo.getString(Config.KEY_TASK_OWNER));
                 taskToSort.setWorker(jo.getString(Config.KEY_TASK_WORKER));
+                taskToSort.setDate_start(jo.getString(Config.KEY_TASK_DATE_START));
+                taskToSort.setOwner_name(jo.getString(Config.KEY_TASK_OWNER_NAME));
 
                 switch (taskToSort.getState()) {
                     case "TODO":

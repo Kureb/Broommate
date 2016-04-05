@@ -4,9 +4,9 @@
 
 //  $id_group = $_POST['id_group'];
 
-  $sql = "SELECT *
-          FROM tasks";
-          //WHERE id_group = '$id_group'";
+  $sql = "SELECT T.id, T.name, T.owner, T.worker, T.priority, T.date_start, T.date_end, T.state, T.deleted, U.name as owner_name
+  FROM tasks T, user U
+  WHERE T.owner = U.facebook_id";
 
   $r = mysqli_query($con, $sql);
 
@@ -21,7 +21,9 @@
       "priority" => $row['priority'],
       "date_start" => $row['date_start'],
       "date_end" => $row['date_end'],
-      "state" => $row['state'] //TODO, DOING, DONE, DELETED
+      "state" => $row['state'],
+      "deleted" => $row['deleted'],
+      "owner_name" => $row['owner_name']
     ));
   }
 
