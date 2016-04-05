@@ -17,4 +17,5 @@
         completions."
     </string>
     <string name="title_activity_add_task">AddTaskActivity</string>
+    <string name="task_title">task title</string>
 </resources>

@@ -5,20 +5,24 @@ package com.oulu.daussy.broommate.Fragment;
  */
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.oulu.daussy.broommate.Activity.AddTaskActivity;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Helper.ExpandableListAdapter;
+import com.oulu.daussy.broommate.Helper.ProfilePictureView;
 import com.oulu.daussy.broommate.Model.Task;
 import com.oulu.daussy.broommate.R;
 
@@ -46,6 +50,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     private String JSON_STRING;
 
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    private View lastClicked;
 
 
     public TabFragmentTasks() { }
@@ -83,24 +89,72 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
         addButton.bringToFront();
 
-        /*
+
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                Toast.makeText(
-                        getContext(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(
-                                listDataHeader.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT)
-                        .show();
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                String section = listDataHeader.get(groupPosition);
+                final View view = listAdapter.getChildView(groupPosition, childPosition, false, v, parent);
+                if (!section.equals(listDataHeader.get(listDataHeader.size()-1))) //Do nothing if section == DONE
+                {
+                    final Task task = listDataChild.get(section).get(childPosition);
+
+                    if (lastClicked != null){
+                        lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.GONE);
+                        lastClicked.invalidate();
+                    }
+
+
+                    lastClicked = v;
+                    lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.VISIBLE);
+
+                    v.findViewById(R.id.taskName).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //Toast.makeText(getContext(), "title", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    v.findViewById(R.id.owner).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ProfilePictureView profilePictureView = (ProfilePictureView)v.findViewById(R.id.owner);
+                            Toast.makeText(getContext(), "owner", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    final boolean[] toDelete = new boolean[1];
+                    v.findViewById(R.id.imageButtonDelete).setOnClickListener(new View.OnClickListener() {
+                        // read more on http://stackoverflow.com/a/31057956/4307336
+                        // to know why we delete the item as soon as tue user taps the delete button
+                        @Override
+                        public void onClick(View v) {
+                            String s = "Delete task in progress...";
+                            //Hide the whole line
+                            //view.setVisibility(View.GONE);
+                            view.setBackgroundColor(Color.RED);
+                            final View delButton = v;
+                            delButton.setVisibility(View.INVISIBLE);
+
+                            Snackbar.make(v, s, Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    //Restore the line
+                                    //view.setVisibility(View.VISIBLE);
+                                    view.setBackgroundColor(Color.TRANSPARENT);
+                                    delButton.setVisibility(View.VISIBLE);
+                                    String s = "Task restored";
+                                    Snackbar.make(v, s, Snackbar.LENGTH_LONG).show();
+                                }
+                            }).show();
+                        }
+                    });
+                }
                 return false;
             }
         });
-        */
+
         //Load data
 
         //fetchTask();

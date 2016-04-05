@@ -78,6 +78,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (!taskToShow.getWorker().isEmpty())
             workerPicture.setProfileId(taskToShow.getWorker());
 
+        /*
         switch (taskToShow.getState()) {
             case "TODO":
                 workerPicture.setVisibility(View.INVISIBLE);
@@ -89,6 +90,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 ownerPicture.setVisibility(View.VISIBLE);
                 break;
         }
+        */
 
         switch (taskToShow.getPriority()) {
             case "LOW":
