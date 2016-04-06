@@ -35,6 +35,7 @@ public class Config {
     public static final String KEY_TASK_DATE_END    =   "date_end";
     public static final String KEY_TASK_STATE       =   "state";
     public static final String KEY_TASK_OWNER_NAME  =   "owner_name";
+    public static final String KEY_TASK_WORKER_NAME =   "worker_name";
 
     //JSON Tags
     public static final String TAG_JSON_ARRAY       =   "result";

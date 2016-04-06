@@ -14,6 +14,15 @@ public class Task {
     private String date_start;
     private String date_end;
     private String owner_name;
+    private String worker_name;
+
+    public String getWorker_name() {
+        return worker_name;
+    }
+
+    public void setWorker_name(String worker_name) {
+        this.worker_name = worker_name;
+    }
 
     public String getOwner_name() {
         return owner_name;

@@ -15,16 +15,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.oulu.daussy.broommate.Activity.AddTaskActivity;
 import com.oulu.daussy.broommate.Configuration.Config;
@@ -42,8 +39,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.graphics.Color.YELLOW;
 
 public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -67,7 +62,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     private boolean[] expandedGroup;
 
 
-    public TabFragmentTasks() { }
+    public TabFragmentTasks() {
+    }
 
 
     @Override
@@ -80,7 +76,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         addButton = (FloatingActionButton) view.findViewById(R.id.fab);
 
 
-        addButton.setOnClickListener(new View.OnClickListener(){
+        addButton.setOnClickListener(new View.OnClickListener() {
             // When we click on the button, we are sent the activity which allows us to add a new task
             @Override
             public void onClick(View v) {
@@ -128,135 +124,73 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 String section = listDataHeader.get(groupPosition);
                 final View view = listAdapter.getChildView(groupPosition, childPosition, false, v, parent);
-                if (!section.equals(listDataHeader.get(listDataHeader.size()-1))) //Do nothing if section == DONE
-                {
-                    final Task task = listDataChild.get(section).get(childPosition);
+                final Task task = listDataChild.get(section).get(childPosition);
 
-                    if (lastClicked != null){
-                        lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.GONE);
-                        lastClicked.invalidate();
-                    }
-
-
-                    lastClicked = v;
-                    lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.VISIBLE);
-
-                    v.findViewById(R.id.taskName).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //Toast.makeText(getContext(), "title", Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                    v.findViewById(R.id.owner).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ProfilePictureView profilePictureView = (ProfilePictureView)v.findViewById(R.id.owner);
-                            //Toast.makeText(getContext(), "owner", Toast.LENGTH_LONG).show();
-                            /*
-                            Snackbar snackbar = Snackbar.make(v, "Created by " + task.getOwner_name()
-                                            + " \non " + task.getDate_start()
-                                            + " \nwith " + task.getPriority() + " priority.",
-                                    Snackbar.LENGTH_INDEFINITE);
-
-                            View snackbarView = snackbar.getView();
-                            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                            final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-                            textView.setMaxLines(3);  // show multiple line
-                            */
-
-                            int priority = 0;
-                            switch (task.getPriority()){
-                                case "LOW":
-                                    priority = Color.GREEN;
-                                    break;
-                                case "MEDIUM":
-                                    priority = Color.YELLOW;
-                                    break;
-                                case "HIGH":
-                                    priority = Color.RED;
-                                    break;
-                            }
-                            String date = task.getDate_start().split(" ")[0];
-                            String time = task.getDate_start().split(" ")[1];
-
-                            //Making multi colored text color of SnackBar text
-                            SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-                            snackbarText.append("Created by ");
-                            int boldStart = snackbarText.length();
-                            snackbarText.append(task.getOwner_name());
-                            //snackbarText.setSpan(new ForegroundColorSpan(Color.BLUE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            snackbarText.append("\non ");
-                            boldStart = snackbarText.length();
-                            snackbarText.append(date);
-                            //snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            snackbarText.append(" at ");
-                            boldStart = snackbarText.length();
-                            snackbarText.append(time);
-                            //snackbarText.setSpan(new ForegroundColorSpan(Color.WHITE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-
-                            snackbarText.append(" \nwith a ");
-                            boldStart = snackbarText.length();
-                            snackbarText.append(task.getPriority());
-                            //snackbarText.setSpan(new ForegroundColorSpan(priority), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                            snackbarText.append(" priority.");
-
-                            Snackbar snackbar = Snackbar.make(v, snackbarText, Snackbar.LENGTH_INDEFINITE);
-                            View snackbarView = snackbar.getView();
-                            snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                            //final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-                            textView.setMaxLines(3);  // show multiple line
-                            snackbar.show();
-                            /*
-                            snackbar.setAction("Ok", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    snackbarActionButton.performClick();
-                                }
-                            });
-                            */
-                            //snackbar.show();
-                        }
-                    });
-
-                    final boolean[] toDelete = new boolean[1];
-                    v.findViewById(R.id.imageButtonDelete).setOnClickListener(new View.OnClickListener() {
-                        // read more on http://stackoverflow.com/a/31057956/4307336
-                        // to know why we delete the item as soon as tue user taps the delete button
-                        @Override
-                        public void onClick(View v) {
-                            String s = "Delete task in progress...";
-                            //Hide the whole line
-                            //view.setVisibility(View.GONE);
-                            view.setBackgroundColor(Color.RED);
-                            final View delButton = v;
-                            delButton.setVisibility(View.INVISIBLE);
-
-                            Snackbar.make(v, s, Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //Restore the line
-                                    //view.setVisibility(View.VISIBLE);
-                                    view.setBackgroundColor(Color.TRANSPARENT);
-                                    delButton.setVisibility(View.VISIBLE);
-                                    String s = "Task restored";
-                                    Snackbar.make(v, s, Snackbar.LENGTH_LONG).show();
-                                }
-                            }).show();
-
-
-                            //fetchTask();
-
-                        }
-                    });
+                // We show the delete button onChildClick
+                // We remember this child to hide delete button when we click on another one
+                if (lastClicked != null) {
+                    lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.INVISIBLE);
+                    lastClicked.invalidate();
                 }
+                lastClicked = v;
+                lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.VISIBLE);
+
+
+                //ProfilePictureView profilePictureView = (ProfilePictureView) v.findViewById(R.id.owner);
+
+                showTaskInformation(task, v);
+
+
+
+
+                final boolean[] toDelete = new boolean[1];
+                v.findViewById(R.id.imageButtonDelete).setOnClickListener(new View.OnClickListener() {
+                    // read more on http://stackoverflow.com/a/31057956/4307336
+                    // to know why we delete the item as soon as tue user taps the delete button
+                    @Override
+                    public void onClick(View v) {
+                        String s = "Delete task in progress...";
+                        //Hide the whole line
+                        //view.setVisibility(View.GONE);
+                        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                        final View delButton = v;
+                        delButton.setVisibility(View.INVISIBLE);
+/*
+                        Snackbar.make(v, s, Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //Restore the line
+                                //view.setVisibility(View.VISIBLE);
+                                view.setBackgroundColor(Color.TRANSPARENT);
+                                delButton.setVisibility(View.VISIBLE);
+                                String s = "Task restored";
+                                Snackbar.make(v, s, Snackbar.LENGTH_LONG).show();
+                            }
+                        }).show();
+*/
+                        final Snackbar snackbar = Snackbar.make(v, "Delete task in progress...", Snackbar.LENGTH_INDEFINITE);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        snackbar.setAction("Undo", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                view.setBackgroundColor(Color.TRANSPARENT);
+                                delButton.setVisibility(View.VISIBLE);
+                                String s = "Task restored";
+                                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
+                                View snackbarView = snackbarCanceld.getView();
+                                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                                snackbarCanceld.show();
+                            }
+                        });
+                        snackbar.show();
+
+
+                    }
+                });
+
                 return false;
             }
         });
@@ -271,7 +205,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     private void prepareListData() {
 
         JSONObject jsonObject = null;
-        ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<Task>>();
@@ -285,12 +219,11 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         List<Task> done = new ArrayList<Task>();
 
 
-
         try {
             jsonObject = new JSONObject(JSON_STRING);
             JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);
 
-            for(int i = 0; i < result.length(); i++){
+            for (int i = 0; i < result.length(); i++) {
                 JSONObject jo = result.getJSONObject(i);
                 Task taskToSort = new Task();
 
@@ -302,6 +235,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 taskToSort.setWorker(jo.getString(Config.KEY_TASK_WORKER));
                 taskToSort.setDate_start(jo.getString(Config.KEY_TASK_DATE_START));
                 taskToSort.setOwner_name(jo.getString(Config.KEY_TASK_OWNER_NAME));
+                taskToSort.setDate_end(jo.getString(Config.KEY_TASK_DATE_END));
+                taskToSort.setWorker_name(jo.getString(Config.KEY_TASK_WORKER_NAME));
 
                 switch (taskToSort.getState()) {
                     case "TODO":
@@ -329,7 +264,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
         listView.setAdapter(listAdapter);
 
-        for (int i = 0; i < expandedGroup.length; i++ ) {
+        for (int i = 0; i < expandedGroup.length; i++) {
             if (expandedGroup[i])
                 listView.expandGroup(i);
         }
@@ -337,8 +272,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    private void fetchTask(){
-        class GetJSON extends AsyncTask<Void,Void,String> {
+    private void fetchTask() {
+        class GetJSON extends AsyncTask<Void, Void, String> {
 
             //ProgressDialog loading;
             @Override
@@ -367,6 +302,93 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         GetJSON gj = new GetJSON();
         gj.execute();
     }
+
+
+    private void showTaskInformation(Task task, View v) {
+        int priority = 0;
+        switch (task.getPriority()) {
+            case "LOW":
+                priority = Color.GREEN;
+                break;
+            case "MEDIUM":
+                priority = Color.YELLOW;
+                break;
+            case "HIGH":
+                priority = Color.RED;
+                break;
+        }
+        String date = task.getDate_start().split(" ")[0];
+        String time = task.getDate_start().split(" ")[1];
+
+        //Making multi colored text color of SnackBar text
+        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+        snackbarText.append("Created by ");
+        int boldStart = snackbarText.length();
+        snackbarText.append(task.getOwner_name());
+        //snackbarText.setSpan(new ForegroundColorSpan(Color.BLUE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        snackbarText.append("\non ");
+        boldStart = snackbarText.length();
+        snackbarText.append(date);
+        snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        snackbarText.append(" at ");
+        boldStart = snackbarText.length();
+        snackbarText.append(time);
+        snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+        snackbarText.append(" \nwith a ");
+        boldStart = snackbarText.length();
+        snackbarText.append(task.getPriority());
+        snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        snackbarText.append(" priority.");
+
+        if (!task.getWorker().isEmpty() && task.getState().equals("DOING")) {
+            snackbarText.append("\n\nIn progress by ");
+            boldStart = snackbarText.length();
+            snackbarText.append(task.getWorker_name());
+            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        if (!task.getWorker().isEmpty() && task.getState().equals("DONE")) {
+            date = task.getDate_end().split(" ")[0];
+            time = task.getDate_end().split(" ")[1];
+            snackbarText.append("\n\nDone by ");
+            boldStart = snackbarText.length();
+            snackbarText.append(task.getWorker_name());
+            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.append("\non ");
+            boldStart = snackbarText.length();
+            snackbarText.append(date);
+            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snackbarText.append(" at ");
+            boldStart = snackbarText.length();
+            snackbarText.append(time);
+            snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+
+
+        final Snackbar snackbar = Snackbar.make(v, snackbarText, Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+
+        //TODO Add button to dismiss, but this way the floating action button stays up..
+/*
+        snackbar.setAction("Ok", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+*/
+        textView.setMaxLines(10);  // show multiple line
+        snackbar.show();
+    }
+
 
     @Override
     public void onRefresh() {
