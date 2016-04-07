@@ -1,18 +1,15 @@
 package com.oulu.daussy.broommate.Activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.oulu.daussy.broommate.Fragment.TabFragmentTasks;
+import com.oulu.daussy.broommate.Helper.CustomViewPager;
 import com.oulu.daussy.broommate.Helper.PagerAdapter;
 import com.oulu.daussy.broommate.R;
 
@@ -32,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Tasks"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        final CustomViewPager viewPager = (CustomViewPager) findViewById(R.id.pager);
+        viewPager.setPagingEnabled(false); //Disable swiping between tabs
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);

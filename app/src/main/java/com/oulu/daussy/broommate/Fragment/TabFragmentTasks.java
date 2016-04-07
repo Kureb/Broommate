@@ -408,7 +408,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
         final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-        
+
         //TODO Add button to dismiss, but this way the floating action button stays up..
 /*
         snackbar.setAction("Ok", new View.OnClickListener() {
