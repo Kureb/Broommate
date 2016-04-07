@@ -16,13 +16,17 @@ import java.net.URL;
  */
 public class Config {
 
-    public static final String IP_SERVER            =   "http://192.168.0.102:8888/";
+    public static final String IP_SERVER            =   "http://192.168.0.101:8888/";
 
     //Address of our scripts of the CRUD
     public static final String URL_ADD_TASK         =   IP_SERVER + "Broommate/addTask.php";
     public static final String URL_UPDATE_TASK      =   IP_SERVER + "Broommate/updateTask.php?id=";
     public static final String URL_GET_ALL_TASKS    =   IP_SERVER + "Broommate/getTasks.php?id_group=";
     public static final String URL_ADD_USER         =   IP_SERVER + "Broommate/addUser.php";
+
+    public static final String STATE_TODO           =   "TODO";
+    public static final String STATE_DOING          =   "DOING";
+    public static final String STATE_DONE           =   "DONE";
 
     /************* TASK **************/
     //Keys that will be used to send request to php scripts

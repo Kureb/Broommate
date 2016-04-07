@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Model.Task;
 import com.oulu.daussy.broommate.R;
 
@@ -75,7 +76,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtTitleTask.setText(taskToShow.getTitle());
         ownerPicture.setProfileId(taskToShow.getOwner());
 
-        if (!taskToShow.getWorker().isEmpty())
+        if (!taskToShow.getWorker().isEmpty() || (!taskToShow.getState().equals(Config.STATE_TODO)))
             workerPicture.setProfileId(taskToShow.getWorker());
 
         /*

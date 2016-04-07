@@ -4,9 +4,9 @@
 
 //  $id_group = $_POST['id_group'];
 
-  $sql = "SELECT T.id, T.name, T.owner, T.worker, T.priority, T.date_start, T.date_end, T.state, T.deleted, U.name as owner_name
-  FROM tasks T, user U
-  WHERE T.owner = U.facebook_id";
+  $sql = "SELECT T.id, T.name, T.owner, T.worker, T.priority, T.date_start, T.date_end, T.state, U.name as owner_name, W.name as worker_name
+          FROM tasks T left join user U on U.facebook_id = T.owner left join user W on W.facebook_id = T.worker
+          WHERE T.state <> 'DELETED'";
 
   $r = mysqli_query($con, $sql);
 
@@ -22,8 +22,8 @@
       "date_start" => $row['date_start'],
       "date_end" => $row['date_end'],
       "state" => $row['state'],
-      "deleted" => $row['deleted'],
-      "owner_name" => $row['owner_name']
+      "owner_name" => $row['owner_name'],
+      "worker_name" => $row['worker_name']
     ));
   }
 

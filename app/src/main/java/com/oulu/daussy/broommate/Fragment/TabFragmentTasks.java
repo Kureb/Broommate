@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.oulu.daussy.broommate.Activity.AddTaskActivity;
 import com.oulu.daussy.broommate.Configuration.Config;
@@ -149,44 +150,18 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                     // to know why we delete the item as soon as tue user taps the delete button
                     @Override
                     public void onClick(View v) {
-                        String s = "Delete task in progress...";
-                        //Hide the whole line
-                        //view.setVisibility(View.GONE);
-                        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                        final View delButton = v;
-                        delButton.setVisibility(View.INVISIBLE);
-/*
-                        Snackbar.make(v, s, Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Restore the line
-                                //view.setVisibility(View.VISIBLE);
-                                view.setBackgroundColor(Color.TRANSPARENT);
-                                delButton.setVisibility(View.VISIBLE);
-                                String s = "Task restored";
-                                Snackbar.make(v, s, Snackbar.LENGTH_LONG).show();
-                            }
-                        }).show();
-*/
-                        final Snackbar snackbar = Snackbar.make(v, "Delete task in progress...", Snackbar.LENGTH_INDEFINITE);
-                        View snackbarView = snackbar.getView();
-                        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                        snackbar.setAction("Undo", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                view.setBackgroundColor(Color.TRANSPARENT);
-                                delButton.setVisibility(View.VISIBLE);
-                                String s = "Task restored";
-                                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
-                                View snackbarView = snackbarCanceld.getView();
-                                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                                snackbarCanceld.show();
-                            }
-                        });
-                        snackbar.show();
 
+                        switch (task.getState()){
+                            case Config.STATE_TODO:
+                                deleteTask(view, v, task);
+                                break;
+                            case Config.STATE_DOING:
+                                gobackTodo(view, v, task);
+                                break;
+                            case Config.STATE_DONE:
+                                gobackDoing(view, v, task);
+                                break;
+                        }
 
                     }
                 });
@@ -200,6 +175,97 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         //fetchTask();
 
         return view;
+    }
+
+    private void gobackTodo(final View view, View deleteButtonView, final Task task) {
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        final View delButton = deleteButtonView;
+        delButton.setVisibility(View.INVISIBLE);
+        final Snackbar snackbar = Snackbar.make(deleteButtonView, "Put task in TODO again", Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+
+        changeTaskStatus(task, "TODO");
+
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.setBackgroundColor(Color.TRANSPARENT);
+                delButton.setVisibility(View.VISIBLE);
+                //text.setTextColor(colorText);
+                String s = "Status restored";
+                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
+                View snackbarView = snackbarCanceld.getView();
+                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                snackbarCanceld.show();
+
+                changeTaskStatus(task, "DOING");
+            }
+        });
+        snackbar.show();
+    }
+    
+
+    private void gobackDoing(final View view, View deleteButtonView, final Task task) {
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        final View delButton = deleteButtonView;
+        delButton.setVisibility(View.INVISIBLE);
+        final Snackbar snackbar = Snackbar.make(delButton, "Put task in DOING again", Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+
+        changeTaskStatus(task, "DOING");
+
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.setBackgroundColor(Color.TRANSPARENT);
+                delButton.setVisibility(View.VISIBLE);
+                //text.setTextColor(colorText);
+                String s = "Status restored";
+                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
+                View snackbarView = snackbarCanceld.getView();
+                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                snackbarCanceld.show();
+
+                changeTaskStatus(task, "DONE");
+            }
+        });
+        snackbar.show();
+    }
+
+    private void deleteTask(final View view, View deleteButtonView, Task task) {
+        //Hide the whole line
+        //view.setVisibility(View.GONE);
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        final View delButton = deleteButtonView;
+        delButton.setVisibility(View.INVISIBLE);
+        //final TextView text = (TextView)view.findViewById(R.id.titleTask);
+        //final int colorText = text.getCurrentTextColor();
+        //text.setTextColor(Color.WHITE);
+        final Snackbar snackbar = Snackbar.make(deleteButtonView, "Delete task in progress...", Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.setBackgroundColor(Color.TRANSPARENT);
+                delButton.setVisibility(View.VISIBLE);
+                //text.setTextColor(colorText);
+                String s = "Task restored";
+                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
+                View snackbarView = snackbarCanceld.getView();
+                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                snackbarCanceld.show();
+            }
+        });
+        snackbar.show();
     }
 
     private void prepareListData() {
@@ -387,6 +453,38 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 */
         textView.setMaxLines(10);  // show multiple line
         snackbar.show();
+    }
+
+    public void changeTaskStatus(final Task task, final String status) {
+        class ChangeTaskStatus extends AsyncTask<Void, Void, String>{
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Toast.makeText(getContext(), s, Toast.LENGTH_LONG);
+            }
+
+            @Override
+            protected String doInBackground(Void... v) {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put(Config.KEY_TASK_ID, Integer.toString(task.getId()));
+                params.put(Config.KEY_TASK_STATE, status);
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_UPDATE_TASK, params);
+
+                return res;
+            }
+        }
+
+        ChangeTaskStatus cts = new ChangeTaskStatus();
+        cts.execute();
     }
 
 
