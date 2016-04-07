@@ -76,8 +76,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtTitleTask.setText(taskToShow.getTitle());
         ownerPicture.setProfileId(taskToShow.getOwner());
 
-        if (!taskToShow.getWorker().isEmpty() || (!taskToShow.getState().equals(Config.STATE_TODO)))
-            workerPicture.setProfileId(taskToShow.getWorker());
+        if (!taskToShow.getState().equals(Config.STATE_TODO))
+            if (!taskToShow.getWorker().isEmpty())
+                workerPicture.setProfileId(taskToShow.getWorker());
 
         /*
         switch (taskToShow.getState()) {

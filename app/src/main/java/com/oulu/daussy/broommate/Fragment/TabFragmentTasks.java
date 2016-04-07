@@ -16,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,15 +143,14 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 showTaskInformation(task, v);
 
 
-
-
                 final boolean[] toDelete = new boolean[1];
                 v.findViewById(R.id.imageButtonDelete).setOnClickListener(new View.OnClickListener() {
                     // read more on http://stackoverflow.com/a/31057956/4307336
                     // to know why we delete the item as soon as tue user taps the delete button
                     @Override
                     public void onClick(View v) {
-
+                        goPreviousState(view, v, task);
+                        /*
                         switch (task.getState()){
                             case Config.STATE_TODO:
                                 deleteTask(view, v, task);
@@ -162,6 +162,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                                 gobackDoing(view, v, task);
                                 break;
                         }
+                        */
 
                     }
                 });
@@ -177,16 +178,23 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         return view;
     }
 
-    private void gobackTodo(final View view, View deleteButtonView, final Task task) {
+    /**
+     * Change the state of the selected task to the previous state
+     */
+    private void goPreviousState(final View view, View deleteButtonView, final Task task) {
+        final String currentState = task.getState();
+        String previousState = task.getPreviousState();
+
         view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        //TODO find a way to change the color of the task to white and put it back to orginal color in setAction onClick
         final View delButton = deleteButtonView;
         delButton.setVisibility(View.INVISIBLE);
-        final Snackbar snackbar = Snackbar.make(deleteButtonView, "Put task in TODO again", Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(deleteButtonView, previousState.equals(Config.STATE_DELETED) ? "Deleting the task in progress.." : "Put task in " + previousState + " again", Snackbar.LENGTH_LONG);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
 
-        changeTaskStatus(task, "TODO");
+        changeTaskStatus(task, previousState);
 
         snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
@@ -201,72 +209,23 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
                 snackbarCanceld.show();
 
-                changeTaskStatus(task, "DOING");
+                changeTaskStatus(task, currentState);
             }
         });
-        snackbar.show();
-    }
-    
-
-    private void gobackDoing(final View view, View deleteButtonView, final Task task) {
-        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        final View delButton = deleteButtonView;
-        delButton.setVisibility(View.INVISIBLE);
-        final Snackbar snackbar = Snackbar.make(delButton, "Put task in DOING again", Snackbar.LENGTH_LONG);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-
-        changeTaskStatus(task, "DOING");
-
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        snackbar.setCallback(new Snackbar.Callback() {
             @Override
-            public void onClick(View v) {
-                view.setBackgroundColor(Color.TRANSPARENT);
-                delButton.setVisibility(View.VISIBLE);
-                //text.setTextColor(colorText);
-                String s = "Status restored";
-                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
-                View snackbarView = snackbarCanceld.getView();
-                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                snackbarCanceld.show();
-
-                changeTaskStatus(task, "DONE");
+            public void onDismissed(Snackbar snackbar, int event) {
+                super.onDismissed(snackbar, event);
+                // if snackbar dismissed from an action click OR from a new Snackbar being shown
+                // we don't do anything
+                // otherwise we refresh the fragment
+                if (event != DISMISS_EVENT_ACTION && event != DISMISS_EVENT_CONSECUTIVE)
+                    onRefresh();
             }
         });
         snackbar.show();
     }
 
-    private void deleteTask(final View view, View deleteButtonView, Task task) {
-        //Hide the whole line
-        //view.setVisibility(View.GONE);
-        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        final View delButton = deleteButtonView;
-        delButton.setVisibility(View.INVISIBLE);
-        //final TextView text = (TextView)view.findViewById(R.id.titleTask);
-        //final int colorText = text.getCurrentTextColor();
-        //text.setTextColor(Color.WHITE);
-        final Snackbar snackbar = Snackbar.make(deleteButtonView, "Delete task in progress...", Snackbar.LENGTH_LONG);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-        snackbar.setAction("Undo", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                view.setBackgroundColor(Color.TRANSPARENT);
-                delButton.setVisibility(View.VISIBLE);
-                //text.setTextColor(colorText);
-                String s = "Task restored";
-                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
-                View snackbarView = snackbarCanceld.getView();
-                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                snackbarCanceld.show();
-            }
-        });
-        snackbar.show();
-    }
 
     private void prepareListData() {
 
@@ -338,6 +297,9 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
+    /**
+     * Fetch the data from the server
+     */
     private void fetchTask() {
         class GetJSON extends AsyncTask<Void, Void, String> {
 
@@ -370,6 +332,11 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
+    /**
+     * Generate a custom snackbar to show more details about the selected task
+     * @param task
+     * @param v
+     */
     private void showTaskInformation(Task task, View v) {
         int priority = 0;
         switch (task.getPriority()) {
@@ -441,7 +408,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
         final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-
+        
         //TODO Add button to dismiss, but this way the floating action button stays up..
 /*
         snackbar.setAction("Ok", new View.OnClickListener() {

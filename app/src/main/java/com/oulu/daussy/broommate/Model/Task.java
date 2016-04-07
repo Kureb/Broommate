@@ -1,5 +1,7 @@
 package com.oulu.daussy.broommate.Model;
 
+import com.oulu.daussy.broommate.Configuration.Config;
+
 /**
  * Created by daussy on 02/04/16.
  */
@@ -95,5 +97,22 @@ public class Task {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getPreviousState() {
+        String currentState = this.getState();
+        String previousState = null;
+        switch (currentState) {
+            case Config.STATE_DONE:
+                previousState = Config.STATE_DOING;
+                break;
+            case Config.STATE_DOING:
+                previousState = Config.STATE_TODO;
+                break;
+            case Config.STATE_TODO:
+                previousState = Config.STATE_DELETED;
+                break;
+        }
+        return previousState;
     }
 }

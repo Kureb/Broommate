@@ -27,6 +27,7 @@ public class Config {
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
     public static final String STATE_DONE           =   "DONE";
+    public static final String STATE_DELETED        =   "DELETED";
 
     /************* TASK **************/
     //Keys that will be used to send request to php scripts
