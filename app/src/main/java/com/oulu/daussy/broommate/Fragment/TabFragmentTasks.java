@@ -132,10 +132,12 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 // We remember this child to hide delete button when we click on another one
                 if (lastClicked != null) {
                     lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.INVISIBLE);
+                    lastClicked.findViewById(R.id.imageNextStep).setVisibility(View.INVISIBLE);
                     lastClicked.invalidate();
                 }
                 lastClicked = v;
                 lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.VISIBLE);
+                lastClicked.findViewById(R.id.imageNextStep).setVisibility(View.VISIBLE);
 
 
                 //ProfilePictureView profilePictureView = (ProfilePictureView) v.findViewById(R.id.owner);
@@ -143,27 +145,20 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 showTaskInformation(task, v);
 
 
-                final boolean[] toDelete = new boolean[1];
                 v.findViewById(R.id.imageButtonDelete).setOnClickListener(new View.OnClickListener() {
                     // read more on http://stackoverflow.com/a/31057956/4307336
                     // to know why we delete the item as soon as tue user taps the delete button
                     @Override
                     public void onClick(View v) {
                         goPreviousState(view, v, task);
-                        /*
-                        switch (task.getState()){
-                            case Config.STATE_TODO:
-                                deleteTask(view, v, task);
-                                break;
-                            case Config.STATE_DOING:
-                                gobackTodo(view, v, task);
-                                break;
-                            case Config.STATE_DONE:
-                                gobackDoing(view, v, task);
-                                break;
                         }
-                        */
+                });
 
+
+                v.findViewById(R.id.imageNextStep).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goNextState(view, v, task);
                     }
                 });
 
@@ -176,6 +171,52 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         //fetchTask();
 
         return view;
+    }
+
+    /**
+     * Change the state of the selected task to the next one
+     */
+    private void goNextState(final View view, View nextStateButton, final Task task) {
+        final String currentState = task.getState();
+        String nextState = task.getNextState();
+
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        //TODO find a way to change the color of the task to white and put it back to orginal color in setAction onClick
+        final View nextButton = nextStateButton;
+        nextButton.setVisibility(View.INVISIBLE);
+        final Snackbar snackbar = Snackbar.make(nextButton, "Updating the task as " + nextState + " by you.", Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+
+        // changeTaskStatus(task, nextState)
+
+        snackbar.setAction("Undo", new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               view.setBackgroundColor(Color.TRANSPARENT);
+               nextButton.setVisibility(View.VISIBLE);
+               String s = "Status restored";
+               Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
+               View snackbarView = snackbarCanceld.getView();
+               snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+               TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+               snackbarCanceld.show();
+
+               //changeTaskStatus(task, currentState
+           }
+        });
+
+        snackbar.setCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                super.onDismissed(snackbar, event);
+                if (event != DISMISS_EVENT_ACTION && event != DISMISS_EVENT_CONSECUTIVE)
+                    onRefresh();
+            }
+        });
+        snackbar.show();
+
     }
 
     /**

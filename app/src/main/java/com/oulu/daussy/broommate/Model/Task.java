@@ -115,4 +115,21 @@ public class Task {
         }
         return previousState;
     }
+
+
+    public String getNextState() {
+        String currentState = this.getState();
+        String nextState = null;
+        switch (currentState) {
+            case Config.STATE_TODO:
+                nextState = Config.STATE_DOING;
+                break;
+            case Config.STATE_DOING:
+                nextState = Config.STATE_DONE;
+                break;
+        }
+        return nextState;
+    }
+
+
 }
