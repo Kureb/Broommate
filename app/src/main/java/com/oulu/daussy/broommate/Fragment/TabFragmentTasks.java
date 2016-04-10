@@ -139,6 +139,9 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 lastClicked.findViewById(R.id.imageButtonDelete).setVisibility(View.VISIBLE);
                 lastClicked.findViewById(R.id.imageNextStep).setVisibility(View.VISIBLE);
 
+                if (task.getState().equals(Config.STATE_DONE))
+                    v.findViewById(R.id.imageNextStep).setVisibility(View.INVISIBLE);
+
 
                 //ProfilePictureView profilePictureView = (ProfilePictureView) v.findViewById(R.id.owner);
 
