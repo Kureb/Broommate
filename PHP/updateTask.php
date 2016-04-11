@@ -4,12 +4,28 @@
     $id = $_POST['id'];
     $state = $_POST['state'];
 
-    require_once('dbConnect.php');
-    
 
     $sql = "UPDATE tasks
-            SET state = '$state'
-            WHERE id = $id";
+            SET state = '$state'";
+
+    if ($state = "DONE"){
+      $date_end = date ("Y-m-d H:i:s");
+      $sql .= ", date_end = '$date_end'";
+    }
+
+
+    if (isset($_POST['worker']) && !empty($_POST['worker'])) {
+      $worker = $_POST['worker'];
+      $sql .= ", worker = '$worker'";
+    }
+
+    $sql .= "WHERE id = $id";
+
+
+
+    require_once('dbConnect.php');
+
+
 
 
     if (mysqli_query($con, $sql)) {

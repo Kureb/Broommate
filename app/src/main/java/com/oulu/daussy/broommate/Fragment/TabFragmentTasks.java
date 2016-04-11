@@ -26,10 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oulu.daussy.broommate.Activity.AddTaskActivity;
+import com.oulu.daussy.broommate.Activity.LoginActivity;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Helper.ExpandableListAdapter;
 import com.oulu.daussy.broommate.Helper.ProfilePictureView;
+import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.Task;
 import com.oulu.daussy.broommate.R;
 
@@ -192,7 +194,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
 
-        // changeTaskStatus(task, nextState)
+        CurrentUser currentUser = CurrentUser.getInstance();
+        changeTaskStatus(task, nextState, currentUser.getFacebook_id());
 
         snackbar.setAction("Undo", new View.OnClickListener() {
            @Override
@@ -206,7 +209,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
                snackbarCanceld.show();
 
-               //changeTaskStatus(task, currentState
+               changeTaskStatus(task, currentState);
            }
         });
 
@@ -486,6 +489,40 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
                 params.put(Config.KEY_TASK_ID, Integer.toString(task.getId()));
                 params.put(Config.KEY_TASK_STATE, status);
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_UPDATE_TASK, params);
+
+                return res;
+            }
+        }
+
+        ChangeTaskStatus cts = new ChangeTaskStatus();
+        cts.execute();
+    }
+
+
+    public void changeTaskStatus(final Task task, final String status, final String worker) {
+        class ChangeTaskStatus extends AsyncTask<Void, Void, String>{
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Toast.makeText(getContext(), s, Toast.LENGTH_LONG);
+            }
+
+            @Override
+            protected String doInBackground(Void... v) {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put(Config.KEY_TASK_ID, Integer.toString(task.getId()));
+                params.put(Config.KEY_TASK_STATE, status);
+                params.put(Config.KEY_TASK_WORKER, worker);
 
                 RequestHandler rh = new RequestHandler();
                 String res = rh.sendPostRequest(Config.URL_UPDATE_TASK, params);
