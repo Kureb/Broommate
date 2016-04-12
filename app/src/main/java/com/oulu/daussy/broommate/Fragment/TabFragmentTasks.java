@@ -144,6 +144,19 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 if (task.getState().equals(Config.STATE_DONE))
                     v.findViewById(R.id.imageNextStep).setVisibility(View.INVISIBLE);
 
+                if (task.getState().equals(Config.STATE_DOING) && !task.workerIsMe())
+                    v.findViewById(R.id.imageNextStep).setVisibility(View.INVISIBLE);
+
+                if (task.getState().equals(Config.STATE_TODO) && !task.ownerIsMe())
+                    v.findViewById(R.id.imageButtonDelete).setVisibility(View.INVISIBLE);
+
+                if (task.getState().equals(Config.STATE_DOING) && (!task.workerIsMe() && !task.ownerIsMe()))
+                    v.findViewById(R.id.imageButtonDelete).setVisibility(View.INVISIBLE);
+
+                if (task.getState().equals(Config.STATE_DONE) && (!task.workerIsMe() && !task.ownerIsMe()))
+                    v.findViewById(R.id.imageButtonDelete).setVisibility(View.INVISIBLE);
+                //TODO refactor this code above. It works but gosh it's not supposed to be written like that
+
 
                 //ProfilePictureView profilePictureView = (ProfilePictureView) v.findViewById(R.id.owner);
 
@@ -152,11 +165,11 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
                 v.findViewById(R.id.imageButtonDelete).setOnClickListener(new View.OnClickListener() {
                     // read more on http://stackoverflow.com/a/31057956/4307336
-                    // to know why we delete the item as soon as tue user taps the delete button
+                    // to know why we delete the item as soon as the user taps the delete button
                     @Override
                     public void onClick(View v) {
                         goPreviousState(view, v, task);
-                        }
+                    }
                 });
 
 

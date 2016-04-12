@@ -132,4 +132,13 @@ public class Task {
     }
 
 
+    public boolean ownerIsMe() {
+        return this.getOwner().equals(CurrentUser.getInstance().getFacebook_id());
+    }
+
+    public boolean workerIsMe() {
+        return this.getWorker().equals(CurrentUser.getInstance().getFacebook_id());
+    }
+
+
 }
