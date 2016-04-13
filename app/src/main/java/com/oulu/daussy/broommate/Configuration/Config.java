@@ -23,6 +23,7 @@ public class Config {
     public static final String URL_UPDATE_TASK      =   IP_SERVER + "Broommate/updateTask.php?id=";
     public static final String URL_GET_ALL_TASKS    =   IP_SERVER + "Broommate/getTasks.php?id_group=";
     public static final String URL_ADD_USER         =   IP_SERVER + "Broommate/addUser.php";
+    public static final String URL_GET_ALL_USERS    =   IP_SERVER + "Broommate/getUsers.php?id_group=";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
@@ -65,5 +66,7 @@ public class Config {
     public static final String KEY_USER_GROUP_ID    =   "group";
     public static final String KEY_USER_FACEBOOK_ID =   "facebook_id";
     public static final String KEY_USER_PICTURE     =   "picture";
+    public static final String KEY_USER_POSX        =   "posX";
+    public static final String KEY_USER_POSY        =   "posY";
     
 }

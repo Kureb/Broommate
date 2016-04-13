@@ -7,9 +7,26 @@ public class User {
 
     private int id;
     private String name;
-    private String surname;
     private String facebook_id;
     private int group_id;
+    private String posX;
+    private String posY;
+
+    public String getPosX() {
+        return posX;
+    }
+
+    public void setPosX(String posX) {
+        this.posX = posX;
+    }
+
+    public String getPosY() {
+        return posY;
+    }
+
+    public void setPosY(String posY) {
+        this.posY = posY;
+    }
 
     public int getId() {
         return id;
@@ -25,14 +42,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     public String getFacebook_id() {
