@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,6 +24,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.oulu.daussy.broommate.Activity.AddTaskActivity;
 import com.oulu.daussy.broommate.Activity.LoginActivity;
 import com.oulu.daussy.broommate.Configuration.Config;
@@ -90,6 +90,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         });
 
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
+        addButton.attachToListView(listView);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);

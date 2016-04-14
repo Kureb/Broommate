@@ -35,12 +35,11 @@ public class ListAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         return this.listUser.get(position);
-        //return null;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return this.listUser.get(position).getId();
     }
 
     @Override
