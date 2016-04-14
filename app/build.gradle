@@ -21,6 +21,10 @@ android {
 
 repositories {
     mavenCentral()
+
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 dependencies {
@@ -31,4 +35,5 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
+    compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
 }

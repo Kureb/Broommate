@@ -24,6 +24,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.fabtransitionactivity.SheetLayout;
 import com.melnykov.fab.FloatingActionButton;
 import com.oulu.daussy.broommate.Activity.AddTaskActivity;
 import com.oulu.daussy.broommate.Activity.LoginActivity;
@@ -44,7 +45,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SheetLayout.OnFabAnimationEndListener {
 
     // Button which allow us to add a new task
     private FloatingActionButton addButton;
@@ -65,6 +66,9 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     // to remember which group are expanded or nto
     private boolean[] expandedGroup;
 
+    private SheetLayout sheetLayout;
+
+    private static final int REQUEST_CODE = 1;
 
     public TabFragmentTasks() {
     }
@@ -84,13 +88,16 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
             // When we click on the button, we are sent the activity which allows us to add a new task
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(getActivity().getApplicationContext(), AddTaskActivity.class);
-                startActivity(myIntent);
+                sheetLayout.expandFab();
             }
         });
 
+
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
         addButton.attachToListView(listView);
+        sheetLayout = (SheetLayout) view.findViewById(R.id.bottom_sheet);
+        sheetLayout.setFab(addButton);
+        sheetLayout.setFabAnimationEndListener(this);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -184,11 +191,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 return false;
             }
         });
-
-        //Load data
-
-        //fetchTask();
-
         return view;
     }
 
@@ -553,5 +555,21 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         fetchTask();
+    }
+
+
+
+    @Override
+    public void onFabAnimationEnd() {
+        Intent myIntent = new Intent(getActivity().getApplicationContext(), AddTaskActivity.class);
+        startActivityForResult(myIntent, REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE){
+            sheetLayout.contractFab();
+        }
     }
 }
