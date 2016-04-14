@@ -68,5 +68,8 @@ public class Config {
     public static final String KEY_USER_PICTURE     =   "picture";
     public static final String KEY_USER_POSX        =   "posX";
     public static final String KEY_USER_POSY        =   "posY";
+
+    public static final String TAG_USER_ID          =   "id";
+    public static final String TAG_USER_NAME        =   "name";
     
 }
