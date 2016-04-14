@@ -29,13 +29,13 @@ public class ListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return listUser.size();
     }
 
     @Override
     public Object getItem(int position) {
-        //return this.listDataChild.get(position);
-        return null;
+        return this.listUser.get(position);
+        //return null;
     }
 
     @Override
@@ -45,7 +45,6 @@ public class ListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("LISTADAPTER", "inside");
         final User user = (User) listUser.get(position);
 
         if (convertView == null) {
