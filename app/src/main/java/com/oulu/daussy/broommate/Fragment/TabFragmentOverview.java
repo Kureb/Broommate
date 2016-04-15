@@ -108,6 +108,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 user.setName(jo.getString(Config.KEY_USER_NAME));
                 user.setPosX(jo.getString(Config.KEY_USER_POSX));
                 user.setPosY(jo.getString(Config.KEY_USER_POSY));
+                user.setLastUpdatePos(jo.getString(Config.KEY_USER_LAST_UPDATE));
                 listUser.add(user);
             }
         } catch (JSONException e) {

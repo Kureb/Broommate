@@ -26,23 +26,23 @@
             android:layout_height="wrap_content"
             android:text="Username"
             android:layout_marginTop="5dp"
-            android:textSize="18dp"/>
+            android:textSize="15dp"/>
 
         <TextView
-            android:id="@+id/postionUser"
+            android:id="@+id/positionUserText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Last position update:"
             android:layout_marginTop="5dp"
-            android:textSize="18dp"/>
+            android:textSize="15dp"/>
 
         <TextView
-            android:id="@+id/tobeornottobe"
+            android:id="@+id/home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2b || !2b"
+            android:text="(Not) At home"
             android:layout_marginTop="5dp"
-            android:textSize="18dp"/>
+            android:textSize="15dp"/>
 
     </LinearLayout>
 

@@ -57,8 +57,13 @@ public class ListAdapter extends BaseAdapter {
         TextView userName = (TextView) convertView
                 .findViewById(R.id.nameUser);
 
+        TextView userPosition = (TextView) convertView
+                .findViewById(R.id.positionUserText);
+
+
         userName.setText(user.getName());
         userPicture.setProfileId(user.getFacebook_id());
+        userPosition.setText("Pos updated: " + user.timeAgo());
 
         return convertView;
     }
