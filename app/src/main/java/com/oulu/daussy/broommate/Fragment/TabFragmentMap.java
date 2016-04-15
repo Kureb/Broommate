@@ -7,6 +7,7 @@ package com.oulu.daussy.broommate.Fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +42,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class TabFragmentMap extends Fragment {
+
+public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private SupportMapFragment fragment;
     private GoogleMap map;
@@ -51,6 +54,8 @@ public class TabFragmentMap extends Fragment {
     private FloatingActionButton fabHome;
     private FloatingActionButton fabShare;
     private FloatingActionButton fabAsk;
+    private FloatingActionButton fabRefresh;
+    private SwipeRefreshLayout swipeRefreshLayout;
     //private LocationManager locationManager;
     private Location location;
 
@@ -62,27 +67,45 @@ public class TabFragmentMap extends Fragment {
         fabHome = (FloatingActionButton) view.findViewById(R.id.fabSetHome);
         fabShare = (FloatingActionButton) view.findViewById(R.id.fabSharePosition);
         fabAsk = (FloatingActionButton) view.findViewById(R.id.fabAskLocation);
+        fabRefresh = (FloatingActionButton) view.findViewById(R.id.fabRefresh);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout_overview);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+                fetchPositions();
+            }
+        });
 
         fabShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "Share", Toast.LENGTH_LONG).show();
-                //updateLocation();
+                updateLocation();
             }
         });
 
         fabHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Home", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Home", Toast.LENGTH_SHORT).show();
             }
         });
 
         fabAsk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Ask", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Ask", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        fabRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchPositions();
             }
         });
 
@@ -157,6 +180,8 @@ public class TabFragmentMap extends Fragment {
 
         LatLng mapCenter = new LatLng(getCenterPositionX(), getCenterPositionY());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCenter, 13));
+        //location = map.getMyLocation();
+        //double latitude = location.getLatitude();
     }
 
     public double getCenterPositionX() {
@@ -191,12 +216,14 @@ public class TabFragmentMap extends Fragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                swipeRefreshLayout.setRefreshing(true);
             }
 
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 JSON_STRING = s;
                 populateUsers();
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -213,9 +240,30 @@ public class TabFragmentMap extends Fragment {
 
     private void updateLocation() {
         final CurrentUser currentUser = CurrentUser.getInstance();
-        //currentUser.setPosX(Double.toString(location.getLatitude()));
-        //currentUser.setPosY(Double.toString(location.getLongitude()));
+
+        LocationManager locationManager = (LocationManager)
+                getContext().getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(locationManager
+                .getBestProvider(criteria, false));
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        currentUser.setPosX(Double.toString(latitude));
+        currentUser.setPosY(Double.toString(longitude));
+
         class UpdateLocation extends AsyncTask<Void, Void, String>{
+
 
             @Override
             protected String doInBackground(Void... v) {
@@ -236,4 +284,8 @@ public class TabFragmentMap extends Fragment {
     }
 
 
+    @Override
+    public void onRefresh() {
+        fetchPositions();
+    }
 }
