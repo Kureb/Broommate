@@ -24,6 +24,7 @@ public class Config {
     public static final String URL_GET_ALL_TASKS    =   IP_SERVER + "Broommate/getTasks.php?id_group=";
     public static final String URL_ADD_USER         =   IP_SERVER + "Broommate/addUser.php";
     public static final String URL_GET_ALL_USERS    =   IP_SERVER + "Broommate/getUsers.php?id_group=";
+    public static final String URL_UPDATE_LOCATION  =   IP_SERVER + "Broommate/updateLocation.php";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";

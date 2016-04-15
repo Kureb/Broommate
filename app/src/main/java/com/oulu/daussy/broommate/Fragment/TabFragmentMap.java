@@ -3,14 +3,25 @@ package com.oulu.daussy.broommate.Fragment;
 /**
  * Created by daussy on 14/03/16.
  */
+
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -19,12 +30,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
+import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class TabFragmentMap extends Fragment {
 
@@ -33,10 +47,47 @@ public class TabFragmentMap extends Fragment {
     private User[] users;
     private String JSON_STRING;
     private int numberOfLocations;
+    private FloatingActionsMenu floatingActionsMenu;
+    private FloatingActionButton fabHome;
+    private FloatingActionButton fabShare;
+    private FloatingActionButton fabAsk;
+    //private LocationManager locationManager;
+    private Location location;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tab_fragment_map, container, false);
+        View view = inflater.inflate(R.layout.tab_fragment_map, container, false);
+
+        floatingActionsMenu = (FloatingActionsMenu) view.findViewById(R.id.multiple_actions);
+        fabHome = (FloatingActionButton) view.findViewById(R.id.fabSetHome);
+        fabShare = (FloatingActionButton) view.findViewById(R.id.fabSharePosition);
+        fabAsk = (FloatingActionButton) view.findViewById(R.id.fabAskLocation);
+
+
+        fabShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Share", Toast.LENGTH_LONG).show();
+                //updateLocation();
+            }
+        });
+
+        fabHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Home", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        fabAsk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Ask", Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+        return view;
     }
 
 
@@ -54,28 +105,7 @@ public class TabFragmentMap extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        /*
-        if (map == null) {
-            map = fragment.getMap();
-            map.addMarker(new MarkerOptions()
-                            .title("Yanchuan")
-                            .snippet("Last update : 17:35")
-                            .position(new LatLng(65.0523786,25.4748522)))
-                    .showInfoWindow(); //Oulu University
-
-            map.addMarker(new MarkerOptions()
-                        .title("Alex")
-                        .position(new LatLng(65.0723439, 25.462122))
-                        .snippet("Last update : 2 hours ago")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
-                    .showInfoWindow();//Ideapark
-
-            LatLng mapCenter = new LatLng((65.0523786+65.0723439)/2, (25.4748522+25.462122)/2);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCenter, 13));
-        }
-        */
         fetchPositions();
-        //populateUsers();
     }
 
 
@@ -115,12 +145,12 @@ public class TabFragmentMap extends Fragment {
         numberOfLocations = 0;
         for (int i = 0; i < users.length; i++) {
             user = users[i];
-            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null"){
+            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null") {
                 numberOfLocations++;
                 map.addMarker(new MarkerOptions()
-                                .title(user.getName())
-                                .snippet(("Last update " + user.timeAgo()))
-                                .position(new LatLng(Double.parseDouble(user.getPosX()), Double.parseDouble(user.getPosY()))))
+                        .title(user.getName())
+                        .snippet(("Last update " + user.timeAgo()))
+                        .position(new LatLng(Double.parseDouble(user.getPosX()), Double.parseDouble(user.getPosY()))))
                         .showInfoWindow();
             }
         }
@@ -132,9 +162,9 @@ public class TabFragmentMap extends Fragment {
     public double getCenterPositionX() {
         double x = 0;
         User user;
-        for (int i = 0; i < users.length; i++){
+        for (int i = 0; i < users.length; i++) {
             user = users[i];
-            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null"){
+            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null") {
                 x += Double.parseDouble(user.getPosX());
             }
         }
@@ -145,9 +175,9 @@ public class TabFragmentMap extends Fragment {
     public double getCenterPositionY() {
         double y = 0;
         User user;
-        for (int i = 0; i < users.length; i++){
+        for (int i = 0; i < users.length; i++) {
             user = users[i];
-            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null"){
+            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null") {
                 y += Double.parseDouble(user.getPosY());
             }
         }
@@ -178,6 +208,31 @@ public class TabFragmentMap extends Fragment {
         }
         GetJSON gj = new GetJSON();
         gj.execute();
+    }
+
+
+    private void updateLocation() {
+        final CurrentUser currentUser = CurrentUser.getInstance();
+        //currentUser.setPosX(Double.toString(location.getLatitude()));
+        //currentUser.setPosY(Double.toString(location.getLongitude()));
+        class UpdateLocation extends AsyncTask<Void, Void, String>{
+
+            @Override
+            protected String doInBackground(Void... v) {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put(Config.KEY_USER_FACEBOOK_ID, currentUser.getFacebook_id());
+                params.put(Config.KEY_USER_POSX, currentUser.getPosX());
+                params.put(Config.KEY_USER_POSY, currentUser.getPosY());
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_UPDATE_LOCATION, params);
+
+                return res;
+            }
+        }
+        UpdateLocation ul = new UpdateLocation();
+        ul.execute();
     }
 
 
