@@ -96,6 +96,7 @@ public class TabFragmentMap extends Fragment {
                 //user.setGroup_id(Integer.parseInt(jo.getString(Config.KEY_USER_GROUP_ID)));
                 user.setPosX(jo.getString(Config.KEY_USER_POSX));
                 user.setPosY(jo.getString(Config.KEY_USER_POSY));
+                user.setLastUpdatePos(jo.getString(Config.KEY_USER_LAST_UPDATE));
 
                 users[i] = user;
 
@@ -118,7 +119,7 @@ public class TabFragmentMap extends Fragment {
                 numberOfLocations++;
                 map.addMarker(new MarkerOptions()
                                 .title(user.getName())
-                                .snippet(("Last updated" + user.getId()))
+                                .snippet(("Last update " + user.timeAgo()))
                                 .position(new LatLng(Double.parseDouble(user.getPosX()), Double.parseDouble(user.getPosY()))))
                         .showInfoWindow();
             }

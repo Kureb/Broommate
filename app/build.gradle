@@ -36,4 +36,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
 }
