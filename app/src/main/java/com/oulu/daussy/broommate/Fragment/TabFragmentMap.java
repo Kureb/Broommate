@@ -25,11 +25,14 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
@@ -41,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -188,22 +192,38 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         map = fragment.getMap();
         User user = null;
         numberOfLocations = 0;
+        ArrayList<MarkerOptions> markers = new ArrayList<>();
         for (int i = 0; i < users.length; i++) {
             user = users[i];
             if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null") {
                 numberOfLocations++;
-                map.addMarker(new MarkerOptions()
+                MarkerOptions marker = new MarkerOptions()
                         .title(user.getName())
                         .snippet(("Last update " + user.timeAgo()))
-                        .position(new LatLng(Double.parseDouble(user.getPosX()), Double.parseDouble(user.getPosY()))))
-                        .showInfoWindow();
+                        .position(new LatLng(Double.parseDouble(user.getPosX()), Double.parseDouble(user.getPosY())));
+                markers.add(marker);
+
+                map.addMarker(marker);
             }
         }
 
+        /**
+         * To see all the markers on the map we need to compute the center
+         * position and the level of zoom
+         */
         LatLng mapCenter = new LatLng(getCenterPositionX(), getCenterPositionY());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCenter, 13));
-        //location = map.getMyLocation();
-        //double latitude = location.getLatitude();
+        map.moveCamera(CameraUpdateFactory.newLatLng(mapCenter));
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (MarkerOptions marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+
+        int padding = 150; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+        map.animateCamera(cu); //or moveCamera without animation
+
     }
 
     public double getCenterPositionX() {
