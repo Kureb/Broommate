@@ -100,7 +100,7 @@ public class User {
                 return "just now";
             }
             //Minutes
-            else if(minutes <=60){
+            else if(minutes <60){
                 if(minutes==1){
                     return "one minute ago";
                 }
