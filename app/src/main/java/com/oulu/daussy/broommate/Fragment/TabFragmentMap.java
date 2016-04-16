@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 
-public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRefreshListener, LocationListener {
 
     private SupportMapFragment fragment;
     private GoogleMap map;
@@ -58,6 +59,13 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     private SwipeRefreshLayout swipeRefreshLayout;
     //private LocationManager locationManager;
     private Location location;
+    protected LocationManager locationManager;
+    protected LocationListener locationListener;
+    protected Context context;
+    private String lat;
+    private String provider;
+    protected String latitude, longitude;
+    protected boolean gps_enabled, network_enabled;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,6 +116,20 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                 fetchPositions();
             }
         });
+
+
+        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            //return TODO;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
 
         return view;
@@ -240,27 +262,8 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void updateLocation() {
         final CurrentUser currentUser = CurrentUser.getInstance();
-
-        LocationManager locationManager = (LocationManager)
-                getContext().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(locationManager
-                .getBestProvider(criteria, false));
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        currentUser.setPosX(Double.toString(latitude));
-        currentUser.setPosY(Double.toString(longitude));
+        currentUser.setPosX(latitude);
+        currentUser.setPosY(longitude);
 
         class UpdateLocation extends AsyncTask<Void, Void, String>{
 
@@ -287,5 +290,27 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onRefresh() {
         fetchPositions();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = Double.toString(location.getLatitude());
+        longitude = Double.toString(location.getLongitude());
+        Log.v("zbra", "IN ON LOCATION CHANGE, lat=" + latitude + ", lon=" + longitude);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
