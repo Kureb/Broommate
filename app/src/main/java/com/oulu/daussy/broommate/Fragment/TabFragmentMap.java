@@ -95,7 +95,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         fabShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Share", Toast.LENGTH_LONG).show();
+                floatingActionsMenu.collapse();
                 updateLocation();
             }
         });
@@ -103,6 +103,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         fabHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                floatingActionsMenu.collapse();
                 Toast.makeText(getContext(), "Home", Toast.LENGTH_SHORT).show();
             }
         });
@@ -110,6 +111,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         fabAsk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                floatingActionsMenu.collapse();
                 Toast.makeText(getContext(), "Ask", Toast.LENGTH_SHORT).show();
             }
         });
@@ -117,6 +119,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         fabRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                floatingActionsMenu.collapse();
                 fetchPositions();
             }
         });
