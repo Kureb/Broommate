@@ -281,6 +281,12 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
                 return res;
             }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                onRefresh();
+            }
         }
         UpdateLocation ul = new UpdateLocation();
         ul.execute();
