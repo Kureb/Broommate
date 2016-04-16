@@ -70,6 +70,8 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     private String provider;
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
+    private final CurrentUser currentUser = CurrentUser.getInstance();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -104,7 +106,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onClick(View v) {
                 floatingActionsMenu.collapse();
-                Toast.makeText(getContext(), "Home", Toast.LENGTH_SHORT).show();
+                updateHome();
             }
         });
 
@@ -112,7 +114,6 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onClick(View v) {
                 floatingActionsMenu.collapse();
-                Toast.makeText(getContext(), "Ask", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -283,8 +284,37 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
 
+    private void updateHome() {
+        currentUser.setPosX(latitude);
+        currentUser.setPosY(longitude);
+
+        class UpdateHomeLocation extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected String doInBackground(Void... v) {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put(Config.KEY_USER_POSX, currentUser.getPosX());
+                params.put(Config.KEY_USER_POSY, currentUser.getPosY());
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_UPDATE_HOME, params);
+
+                return res;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                onRefresh();
+            }
+        }
+        UpdateHomeLocation uhl = new UpdateHomeLocation();
+        uhl.execute();
+    }
+
+
     private void updateLocation() {
-        final CurrentUser currentUser = CurrentUser.getInstance();
         currentUser.setPosX(latitude);
         currentUser.setPosY(longitude);
 

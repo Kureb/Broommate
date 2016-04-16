@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public class Config {
 
-    public static final String IP_SERVER            =   "http://192.168.0.104:8888/";
+    public static final String IP_SERVER            =   "http://192.168.0.102:8888/";
 
     //Address of our scripts of the CRUD
     public static final String URL_ADD_TASK         =   IP_SERVER + "Broommate/addTask.php";
@@ -25,6 +25,7 @@ public class Config {
     public static final String URL_ADD_USER         =   IP_SERVER + "Broommate/addUser.php";
     public static final String URL_GET_ALL_USERS    =   IP_SERVER + "Broommate/getUsers.php?id_group=";
     public static final String URL_UPDATE_LOCATION  =   IP_SERVER + "Broommate/updateLocation.php";
+    public static final String URL_UPDATE_HOME      =   IP_SERVER + "Broommate/updateHome.php";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
