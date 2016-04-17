@@ -2,13 +2,16 @@
 
   require_once('dbConnect.php');
 
-//  $id_group = $_POST['id_group'];
+  $key_group = $_GET['id_group'];
 
   $sql = "SELECT T.id, T.name, T.owner, T.worker, T.priority, T.date_start, T.date_end, T.state, U.name as owner_name, W.name as worker_name
           FROM tasks T left join user U on U.facebook_id = T.owner left join user W on W.facebook_id = T.worker
-          WHERE T.state <> 'DELETED'";
+          WHERE T.state <> 'DELETED'
+          AND T.group_key = '$key_group'";
 
   $r = mysqli_query($con, $sql);
+
+  //printf("Error: %s\n", mysqli_error($con));
 
   $result = array();
 

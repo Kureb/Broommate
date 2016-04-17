@@ -106,6 +106,7 @@ public class AddTaskActivity extends AppCompatActivity {
                 params.put(Config.KEY_TASK_NAME, name);
                 params.put(Config.KEY_TASK_PRIORITY, priority);
                 params.put(Config.KEY_TASK_OWNER, owner);
+                params.put(Config.KEY_USER_GROUP_KEY, currentUser.getGroupKey());
 
                 RequestHandler rh = new RequestHandler();
                 String res = rh.sendPostRequest(Config.URL_ADD_TASK, params);

@@ -70,6 +70,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
     private static final int REQUEST_CODE = 1;
 
+    private CurrentUser currentUser = CurrentUser.getInstance();
+
     public TabFragmentTasks() {
     }
 
@@ -386,7 +388,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
-                String s = rh.sendGetRequest(Config.URL_GET_ALL_TASKS);
+                String s = rh.sendGetRequestParam(Config.URL_GET_ALL_TASKS, currentUser.getGroupKey());
                 return s;
             }
         }

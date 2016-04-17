@@ -7,9 +7,10 @@
     $state      =   "TODO";
     $owner      =   $_POST['owner'];
     $date_start =   date ("Y-m-d H:i:s");
+    $key        =   $_POST['key'];
 
-    $sql = "INSERT INTO tasks (name, priority, state, owner, date_start)
-            VALUES ('$name', '$priority', '$state', '$owner', '$date_start')";
+    $sql = "INSERT INTO tasks (name, priority, state, owner, date_start, group_key)
+            VALUES ('$name', '$priority', '$state', '$owner', '$date_start', '$key')";
 
 
     require_once('dbConnect.php');
