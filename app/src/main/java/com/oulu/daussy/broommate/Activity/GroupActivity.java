@@ -122,7 +122,7 @@ public class GroupActivity extends AppCompatActivity {
 
     public void joinGroup(final String key) {
         //TODO check if group really exists
-        currentUser.setGroupKey(String.valueOf(textKeyJoinGroup.getText()));
+        currentUser.setGroupKey(key);
 
         class JoinGroup extends AsyncTask<Void, Void, String>{
 

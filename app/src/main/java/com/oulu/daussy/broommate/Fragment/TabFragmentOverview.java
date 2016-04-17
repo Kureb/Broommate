@@ -12,11 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Helper.ListAdapter;
+import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
@@ -35,6 +37,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListAdapter listAdapter;
     private FloatingActionButton fab;
+    private CurrentUser currentUser = CurrentUser.getInstance();
 
     public TabFragmentOverview() {
     }
@@ -83,7 +86,8 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
             @Override
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
-                String s = rh.sendGetRequest(Config.URL_GET_ALL_USERS);
+                String s = rh.sendGetRequestParam(Config.URL_GET_USER, currentUser.getGroupKey());
+                //Toast.makeText(getContext(), s, Toast.LENGTH_LONG);
                 return s;
             }
         }

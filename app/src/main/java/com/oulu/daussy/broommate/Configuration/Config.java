@@ -28,6 +28,7 @@ public class Config {
     public static final String URL_UPDATE_HOME      =   IP_SERVER + "Broommate/updateHome.php";
     public static final String URL_ADD_GROUP        =   IP_SERVER + "Broommate/addGroup.php";
     public static final String URL_JOIN_GROUP       =   IP_SERVER + "Broommate/joinGroup.php";
+    public static final String URL_GET_USER         =   IP_SERVER + "Broommate/getUser.php?id_group=";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
