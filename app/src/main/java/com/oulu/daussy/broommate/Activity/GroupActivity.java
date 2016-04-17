@@ -2,12 +2,14 @@ package com.oulu.daussy.broommate.Activity;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oulu.daussy.broommate.Configuration.Config;
@@ -25,7 +27,7 @@ public class GroupActivity extends AppCompatActivity {
     private Button buttonNewGroup;
     private Button buttonJoinGroup;
     private EditText textGroupName;
-    private EditText textKeyNewGroup;
+    private TextView textKeyNewGroup;
     private EditText textKeyJoinGroup;
 
     @Override
@@ -37,13 +39,15 @@ public class GroupActivity extends AppCompatActivity {
         buttonJoinGroup = (Button)   findViewById(R.id.buttonJoinGroup);
         textGroupName   = (EditText) findViewById(R.id.editGroupName);
         textKeyJoinGroup = (EditText) findViewById(R.id.editKeyJoin);
-        textKeyNewGroup  = (EditText) findViewById(R.id.editKeyGenerated);
+        textKeyNewGroup  = (TextView) findViewById(R.id.editKeyGenerated);
 
 
         buttonNewGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (textGroupName.getText().length() > 0){
+                    buttonJoinGroup.setVisibility(View.INVISIBLE);
+                    textKeyJoinGroup.setVisibility(View.INVISIBLE);
                     textKeyNewGroup.setText(generateKey());
                     createNewGroup(String.valueOf(textGroupName.getText()), String.valueOf(textKeyNewGroup.getText()));
                     joinGroup(String.valueOf(textKeyNewGroup.getText()));
@@ -56,9 +60,12 @@ public class GroupActivity extends AppCompatActivity {
         buttonJoinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (textKeyJoinGroup.getText().length() > 0)
+                if (textKeyJoinGroup.getText().length() > 0){
+                    buttonNewGroup.setVisibility(View.INVISIBLE);
+                    textKeyNewGroup.setVisibility(View.INVISIBLE);
                     joinGroup(String.valueOf(textKeyJoinGroup.getText()));
                     nextActivity();
+                }
             }
         });
 
@@ -82,6 +89,11 @@ public class GroupActivity extends AppCompatActivity {
 
         class NewGroup extends AsyncTask<Void, Void, String>{
 
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                Toast.makeText(GroupActivity.this, "Creating group in progress..", Toast.LENGTH_LONG).show();
+            }
             @Override
             protected String doInBackground(Void... v) {
                 HashMap<String, String> params = new HashMap<>();
