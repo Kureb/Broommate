@@ -214,6 +214,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         /**
          * To see all the markers on the map we need to compute the center
          * position and the level of zoom
+         * TODO fix bug when just one user who has shared its location
          */
         LatLng mapCenter = new LatLng(getCenterPositionX(), getCenterPositionY());
         map.moveCamera(CameraUpdateFactory.newLatLng(mapCenter));
@@ -275,7 +276,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
-                String s = rh.sendGetRequest(Config.URL_GET_ALL_USERS);
+                String s = rh.sendGetRequestParam(Config.URL_GET_USER, currentUser.getGroupKey());
                 return s;
             }
         }

@@ -2,10 +2,9 @@
 
   require_once('dbConnect.php');
 
-  $group_id = $_GET['id'];
+  //$group_id = $_GET['id'];
 
-  $sql = "SELECT * FROM user
-          WHERE group_key = $group_id";
+  $sql = "SELECT * FROM user";
 
   $r = mysqli_query($con, $sql);
 

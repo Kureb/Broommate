@@ -2,12 +2,12 @@
 
   require_once('dbConnect.php');
 
-  $facebook_id = $_GET['id_group'];
+  $group_id = $_GET['id_group'];
 
   //echo $facebook_id;
 
   $sql = "SELECT * FROM user
-          WHERE group_id = '$facebook_id'";
+          WHERE group_id = '$group_id'";
 
   $r = mysqli_query($con, $sql);
 
@@ -17,7 +17,6 @@
  $result = array();
 
  while ($row = mysqli_fetch_array($r)) {
-
  array_push($result,array(
    "id" => $row['id'],
    "facebook_id" => $row['facebook_id'],
