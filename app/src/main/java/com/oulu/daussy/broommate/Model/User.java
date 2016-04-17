@@ -18,6 +18,15 @@ public class User {
     private String posX;
     private String posY;
     private String lastUpdatePos;
+    private String groupKey;
+
+    public String getGroupKey() {
+        return groupKey;
+    }
+
+    public void setGroupKey(String groupKey) {
+        this.groupKey = groupKey;
+    }
 
     public String getPosX() {
         return posX;

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.oulu.daussy.broommate.Activity.GroupActivity">
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editGroupName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="66dp"
+        android:layout_marginStart="66dp"
+        android:text="Group name" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editKeyGenerated"
+        android:layout_below="@+id/editGroupName"
+        android:layout_alignLeft="@+id/editGroupName"
+        android:layout_alignStart="@+id/editGroupName"
+        android:text="Key"
+        android:editable="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:id="@+id/buttonCreateGroup"
+        android:layout_below="@+id/editKeyGenerated"
+        android:layout_alignLeft="@+id/editKeyGenerated"
+        android:layout_alignStart="@+id/editKeyGenerated"
+        android:layout_marginTop="39dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editKeyJoin"
+        android:layout_below="@+id/buttonCreateGroup"
+        android:layout_alignLeft="@+id/buttonCreateGroup"
+        android:layout_alignStart="@+id/buttonCreateGroup"
+        android:layout_marginTop="128dp"
+        android:text="Key" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Join"
+        android:id="@+id/buttonJoinGroup"
+        android:layout_below="@+id/editKeyJoin"
+        android:layout_alignLeft="@+id/editKeyJoin"
+        android:layout_alignStart="@+id/editKeyJoin"
+        android:layout_marginTop="35dp" />
+</RelativeLayout>

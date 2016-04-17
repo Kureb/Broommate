@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public class Config {
 
-    public static final String IP_SERVER            =   "http://192.168.0.102:8888/";
+    public static final String IP_SERVER            =   "http://192.168.0.101:8888/";
 
     //Address of our scripts of the CRUD
     public static final String URL_ADD_TASK         =   IP_SERVER + "Broommate/addTask.php";
@@ -26,6 +26,8 @@ public class Config {
     public static final String URL_GET_ALL_USERS    =   IP_SERVER + "Broommate/getUsers.php?id_group=";
     public static final String URL_UPDATE_LOCATION  =   IP_SERVER + "Broommate/updateLocation.php";
     public static final String URL_UPDATE_HOME      =   IP_SERVER + "Broommate/updateHome.php";
+    public static final String URL_ADD_GROUP        =   IP_SERVER + "Broommate/addGroup.php";
+    public static final String URL_JOIN_GROUP       =   IP_SERVER + "Broommate/joinGroup.php";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
@@ -65,12 +67,14 @@ public class Config {
     public static final String KEY_USER_ID          =   "id";
     public static final String KEY_USER_NAME        =   "name";
     public static final String KEY_USER_SURNAME     =   "surname";
-    public static final String KEY_USER_GROUP_ID    =   "group";
+    public static final String KEY_USER_GROUP_ID    =   "group_id";
     public static final String KEY_USER_FACEBOOK_ID =   "facebook_id";
     public static final String KEY_USER_PICTURE     =   "picture";
     public static final String KEY_USER_POSX        =   "posX";
     public static final String KEY_USER_POSY        =   "posY";
     public static final String KEY_USER_LAST_UPDATE =   "last_update";
+    public static final String KEY_USER_GROUP_NAME  =   "name";
+    public static final String KEY_USER_GROUP_KEY   =   "key";
 
     public static final String TAG_USER_ID          =   "id";
     public static final String TAG_USER_NAME        =   "name";

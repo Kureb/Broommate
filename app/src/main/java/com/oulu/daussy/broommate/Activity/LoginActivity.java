@@ -59,7 +59,7 @@ public class LoginActivity extends Activity {
         //if already logged in, start next activity
         if (AccessToken.getCurrentAccessToken()!=null) {
             populateUser();
-            Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent myIntent = new Intent(getApplicationContext(), GroupActivity.class);
             startActivity(myIntent);
         }
 
@@ -71,7 +71,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 displayToast("Login successful");
-                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent myIntent = new Intent(getApplicationContext(), GroupActivity.class);
 
                 accessToken = AccessToken.getCurrentAccessToken();
 
