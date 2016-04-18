@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Model.CurrentUser;
+import com.oulu.daussy.broommate.Model.Home;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
@@ -71,6 +72,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
     private final CurrentUser currentUser = CurrentUser.getInstance();
+    private final Home home = Home.getInstance();
 
 
     @Override
@@ -169,8 +171,9 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
             jsonObject = new JSONObject(JSON_STRING);
             JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);
             users = new User[result.length()];
+            JSONObject jo = null;
             for (int i = 0; i < result.length(); i++) {
-                JSONObject jo = result.getJSONObject(i);
+                jo = result.getJSONObject(i);
                 User user = new User();
 
                 user.setId(Integer.parseInt(jo.getString(Config.KEY_USER_ID)));
@@ -181,9 +184,13 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                 user.setPosY(jo.getString(Config.KEY_USER_POSY));
                 user.setLastUpdatePos(jo.getString(Config.KEY_USER_LAST_UPDATE));
 
+
                 users[i] = user;
 
             }
+
+            home.setPosX(jo.getString("posX_home"));
+            home.setPosY(jo.getString("posY_home"));
 
             populateMap();
 
@@ -297,9 +304,13 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
                 params.put(Config.KEY_USER_POSX, currentUser.getPosX());
                 params.put(Config.KEY_USER_POSY, currentUser.getPosY());
+                params.put(Config.KEY_USER_GROUP_KEY, currentUser.getGroupKey());
 
                 RequestHandler rh = new RequestHandler();
                 String res = rh.sendPostRequest(Config.URL_UPDATE_HOME, params);
+
+                home.setPosX(currentUser.getPosX());
+                home.setPosY(currentUser.getPosY());
 
                 return res;
             }

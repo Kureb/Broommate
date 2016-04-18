@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.oulu.daussy.broommate.Model.Home;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -20,6 +23,7 @@ public class ListAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<User> listUser;
+    private Home home = Home.getInstance();
 
     public ListAdapter(Context context, ArrayList<User> listUser){
         this.context = context;
@@ -60,10 +64,15 @@ public class ListAdapter extends BaseAdapter {
         TextView userPosition = (TextView) convertView
                 .findViewById(R.id.positionUserText);
 
+        TextView homeOrNot = (TextView) convertView
+                .findViewById(R.id.home);
+
 
         userName.setText(user.getName());
         userPicture.setProfileId(user.getFacebook_id());
-        userPosition.setText("Pos updated: " + user.timeAgo());
+        String pos = user.isHome() ? "Localised at home " : "Localised not at home ";
+        userPosition.setText(pos + user.timeAgo());
+        //homeOrNot.setText(user.isHome() ? "Is at home" : "Is not at home");
 
         return convertView;
     }

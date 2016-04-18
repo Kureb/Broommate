@@ -19,6 +19,7 @@ import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Helper.ListAdapter;
 import com.oulu.daussy.broommate.Model.CurrentUser;
+import com.oulu.daussy.broommate.Model.Home;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
@@ -38,6 +39,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
     private ListAdapter listAdapter;
     private FloatingActionButton fab;
     private CurrentUser currentUser = CurrentUser.getInstance();
+    private Home home = Home.getInstance();
 
     public TabFragmentOverview() {
     }
@@ -103,10 +105,10 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
         try {
             jsonObject = new JSONObject(JSON_STRING);
             JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);
-
+            JSONObject jo = null;
             for (int i = 0; i < result.length(); i++) {
                 User user = new User();
-                JSONObject jo = result.getJSONObject(i);
+                jo = result.getJSONObject(i);
                 user.setId(Integer.parseInt(jo.getString(Config.KEY_USER_ID)));
                 user.setFacebook_id(jo.getString(Config.KEY_USER_FACEBOOK_ID));
                 user.setName(jo.getString(Config.KEY_USER_NAME));
@@ -115,6 +117,10 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 user.setLastUpdatePos(jo.getString(Config.KEY_USER_LAST_UPDATE));
                 listUser.add(user);
             }
+
+            home.setPosX(jo.getString("posX_home"));
+            home.setPosY(jo.getString("posY_home"));
+            
         } catch (JSONException e) {
             e.printStackTrace();
         }
