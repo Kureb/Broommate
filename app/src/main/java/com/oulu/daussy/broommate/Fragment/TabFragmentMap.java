@@ -88,6 +88,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout_overview);
         swipeRefreshLayout.setOnRefreshListener(this);
 
+        swipeRefreshLayout.setEnabled(false);
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
