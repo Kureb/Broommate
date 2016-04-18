@@ -84,6 +84,29 @@ public class User {
         this.lastUpdatePos = lastUpdatePos;
     }
 
+    public boolean isHome() {
+        Home home = Home.getInstance();
+        if (home.getPosX().equals("null") || home.getPosY().equals("null"))
+            return false;
+
+        double posX_home = Double.parseDouble(home.getPosX());
+        double posY_home = Double.parseDouble(home.getPosY());
+
+        double posX = Double.parseDouble(this.getPosX());
+        double posY = Double.parseDouble(this.getPosY());
+
+
+        boolean bool = false;
+
+        //TODO make it more accurate
+        if (Math.round(posX_home) == Math.round(posX) && Math.round(posY_home) == Math.round(posY))
+            bool = true;
+
+
+        return bool;
+
+    }
+
     //Kiitos http://stackoverflow.com/a/26036013/4307336
     public String timeAgo() {
         String datetime = this.getLastUpdatePos();
@@ -106,7 +129,7 @@ public class User {
 
             // Seconds
             if(seconds <= 60){
-                return "just now";
+                return "just a few seconds ago";
             }
             //Minutes
             else if(minutes <60){

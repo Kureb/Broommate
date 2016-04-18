@@ -36,6 +36,7 @@
             android:layout_marginTop="5dp"
             android:textSize="15dp"/>
 
+        <!--
         <TextView
             android:id="@+id/home"
             android:layout_width="wrap_content"
@@ -43,6 +44,7 @@
             android:text="(Not) At home"
             android:layout_marginTop="5dp"
             android:textSize="15dp"/>
+            -->
 
     </LinearLayout>
 
