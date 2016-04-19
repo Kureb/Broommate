@@ -141,7 +141,7 @@ public class User {
                 }
             }
             //Hours
-            else if(hours <=24){
+            else if(hours < 24){
                 if(hours==1){
                     return "an hour ago";
                 }else{
@@ -149,7 +149,7 @@ public class User {
                 }
             }
             //Days
-            else if(days <= 7){
+            else if(days <  7){
                 if(days==1){
                     return "yesterday";
                 }else{
@@ -165,7 +165,7 @@ public class User {
                 }
             }
             //Months
-            else if(months <=12){
+            else if(months < 12){
                 if(months==1){
                     return "a month ago";
                 }else{
