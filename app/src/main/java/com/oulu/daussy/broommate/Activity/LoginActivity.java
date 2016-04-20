@@ -40,6 +40,7 @@ public class LoginActivity extends Activity {
     private AccessToken accessToken;
     private CallbackManager callbackManager;
     public CurrentUser currentUser = CurrentUser.getInstance();
+    private String JSON_STRING;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +57,18 @@ public class LoginActivity extends Activity {
         //ask for permission to read our profil
         loginButton.setReadPermissions("public_profile");
 
+        //currentUser.setGroupKey("61d4ab33-fec3-447c-b30d-5d01a5dee34e");
+
         //if already logged in, start next activity
         if (AccessToken.getCurrentAccessToken()!=null) {
             populateUser();
-            Intent myIntent = new Intent(getApplicationContext(), GroupActivity.class);
+            //fetchUser();
+            Intent myIntent = null;
+            //if (!hasGroup())
+                myIntent = new Intent(getApplicationContext(), GroupActivity.class);
+            //else
+            //    myIntent = new Intent(getApplicationContext(), MainActivity.class);
+
             startActivity(myIntent);
         }
 
@@ -71,7 +80,12 @@ public class LoginActivity extends Activity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 displayToast("Login successful");
-                Intent myIntent = new Intent(getApplicationContext(), GroupActivity.class);
+                //fetchUser();
+                Intent myIntent = null;
+                //if (!hasGroup())
+                    myIntent = new Intent(getApplicationContext(), GroupActivity.class);
+                //else
+                  //  myIntent = new Intent(getApplicationContext(), MainActivity.class);
 
                 accessToken = AccessToken.getCurrentAccessToken();
 
@@ -193,6 +207,7 @@ public class LoginActivity extends Activity {
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
+
 
 
 }

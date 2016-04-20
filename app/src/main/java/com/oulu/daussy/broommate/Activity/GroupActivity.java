@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.Button;
@@ -16,6 +17,10 @@ import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.acl.Group;
 import java.util.HashMap;
@@ -29,11 +34,14 @@ public class GroupActivity extends AppCompatActivity {
     private EditText textGroupName;
     private TextView textKeyNewGroup;
     private EditText textKeyJoinGroup;
+    private String JSON_STRING;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+
+        fetchUser();
 
         buttonNewGroup  = (Button)   findViewById(R.id.buttonCreateGroup);
         buttonJoinGroup = (Button)   findViewById(R.id.buttonJoinGroup);
@@ -151,6 +159,56 @@ public class GroupActivity extends AppCompatActivity {
 
         JoinGroup jg = new JoinGroup();
         jg.execute();
+    }
+
+
+
+    private void fetchUser() {
+        class GetJSON extends AsyncTask<Void, Void, String> {
+
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                JSON_STRING = s;
+                if (JSON_STRING != "{\"result\":[]}\n"){
+                    populateGroup();
+                }
+            }
+
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+                String s = rh.sendGetRequestParam(Config.URL_GET_UNIQUE_USER, currentUser.getFacebook_id());
+                Log.d("String", " = " + s.toString());
+                return s;
+            }
+
+
+        }
+        GetJSON gj = new GetJSON();
+        gj.execute();
+    }
+
+
+    public void populateGroup() {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(JSON_STRING);
+            JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);
+            String groupkey = result.getJSONObject(0).getString(Config.KEY_USER_GROUP_ID);
+            currentUser.setGroupKey(groupkey);
+
+            if (groupkey.length() > 0 && !groupkey.equals("null")){
+                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(myIntent);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
