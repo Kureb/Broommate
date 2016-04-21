@@ -30,6 +30,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -73,6 +75,8 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     protected boolean gps_enabled, network_enabled;
     private final CurrentUser currentUser = CurrentUser.getInstance();
     private final Home home = Home.getInstance();
+    private Circle mCircle;//home
+    private Marker mMarker;//home
 
 
     @Override
@@ -219,6 +223,9 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
             }
         }
 
+        LatLng latLng = new LatLng(Double.parseDouble(home.getPosX()), Double.parseDouble(home.getPosY()));
+        drawMarkerWithCircle(latLng);
+
         /**
          * To see all the markers on the map we need to compute the center
          * position and the level of zoom
@@ -356,6 +363,18 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         }
         UpdateLocation ul = new UpdateLocation();
         ul.execute();
+    }
+
+    private void drawMarkerWithCircle(LatLng position){
+        double radiusInMeters = 1000.0;
+        int strokeColor = 0xffff0000; //red outline
+        int shadeColor = 0x44ff0000; //opaque red fill
+
+        CircleOptions circleOptions = new CircleOptions().center(position).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(8);
+        mCircle = map.addCircle(circleOptions);
+
+        MarkerOptions markerOptions = new MarkerOptions().position(position);
+        mMarker = map.addMarker(markerOptions);
     }
 
 

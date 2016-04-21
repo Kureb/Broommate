@@ -1,6 +1,9 @@
 package com.oulu.daussy.broommate.Model;
 
+import android.location.Location;
 import android.util.Log;
+
+import com.google.android.gms.maps.model.Circle;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -89,6 +92,7 @@ public class User {
         if (home.getPosX().equals("null") || home.getPosY().equals("null"))
             return false;
 
+
         double posX_home = Double.parseDouble(home.getPosX());
         double posY_home = Double.parseDouble(home.getPosY());
 
@@ -97,13 +101,31 @@ public class User {
 
 
         boolean bool = false;
+        /*
+        double threshold = 0.000002;
 
-        //TODO make it more accurate
-        if (Math.round(posX_home) == Math.round(posX) && Math.round(posY_home) == Math.round(posY))
-            bool = true;
+        boolean closeX = ((posX <= (posX_home + threshold)) || (posX <= (posX_home - threshold)));
+        boolean closeY = ((posY <= (posY_home + threshold)) || (posY <= (posY_home - threshold)));
 
+        bool = closeX && closeY;
 
         return bool;
+
+*/
+
+        //Circle mCircle;
+        float[] distance;
+        distance = new float[2];
+        Location location;
+
+        Location.distanceBetween(posX, posY,
+                posX_home, posY_home, distance);
+
+        if( distance[0] > 5000  ){
+            return false;
+        } else {
+            return true;
+        }
 
     }
 
