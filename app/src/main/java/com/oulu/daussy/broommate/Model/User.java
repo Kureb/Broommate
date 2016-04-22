@@ -10,8 +10,7 @@ import java.util.Date;
  * Created by daussy on 03/04/16.
  */
 public class User {
-
-    private int fortest;
+    
     private int id;
     private String name;
     private String facebook_id;
