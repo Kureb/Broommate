@@ -11,6 +11,7 @@ import java.util.Date;
  */
 public class User {
 
+    private int fortest;
     private int id;
     private String name;
     private String facebook_id;
