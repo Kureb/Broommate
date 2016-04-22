@@ -101,6 +101,7 @@ public class User {
 
 
         boolean bool = false;
+
         /*
         double threshold = 0.000002;
 

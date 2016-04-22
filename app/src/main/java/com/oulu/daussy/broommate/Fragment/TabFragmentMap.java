@@ -78,7 +78,6 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     private Circle mCircle;//home
     private Marker mMarker;//home
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_fragment_map, container, false);
