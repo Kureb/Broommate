@@ -32,6 +32,10 @@ public class Config {
     public static final String URL_GET_UNIQUE_USER  =   IP_SERVER + "Broommate/getUniqueUser.php?id_facebook=";
     public static final String URL_UPDATE_USER      =   IP_SERVER + "Broommate/updateUser.php";
 
+    public static final String URL_GOOGLE_CLOUD_MSG =   "https://android.googleapis.com/gcm/send";
+    public static final String API_KEY              =   "AIzaSyBuzanSYxT1NGi3ghf73G2nHSGkClYJzi0";
+
+
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
     public static final String STATE_DONE           =   "DONE";

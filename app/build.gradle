@@ -10,7 +10,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-    }
+     }
     buildTypes {
         release {
             minifyEnabled false
@@ -28,15 +28,17 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
-    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    //com.google.android.gms:play-services-location:8.4.0
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
     compile 'com.getbase:floatingactionbutton:1.10.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Model.CurrentUser;
+import com.oulu.daussy.broommate.Model.GoogleCloudMessage;
 import com.oulu.daussy.broommate.Model.Home;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
@@ -120,6 +121,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onClick(View v) {
                 floatingActionsMenu.collapse();
+                askUsersPosition();
             }
         });
 
@@ -147,6 +149,31 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
 
         return view;
+    }
+
+    private void askUsersPosition() {
+        class AskUsers extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected String doInBackground(Void... p) {
+                HashMap<String, String> params = new HashMap<>();
+
+                GoogleCloudMessage message = new GoogleCloudMessage();
+                message.addRegId("APA91bF4kfhXWCzzve8tqeglG4lfVVZbAvPd6CkTSGZ8SGHsMVzgNrpVmY5Nb2tuOVkqYQWRMCjP7IGBVvMv48ucDYS4TwV4Rs0cyPrZ07oQYJM5YPIRrXCX0rlcjdBtI62IKbMY8ZN2");
+                message.createData("Test Title", "Test Message");
+
+
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendGoogleRequest(message);
+
+
+                return res;
+            }
+        }
+
+        AskUsers au = new AskUsers();
+        au.execute();
     }
 
 

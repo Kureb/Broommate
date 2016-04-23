@@ -54,7 +54,7 @@
         android:scaleType="fitXY"
         android:layout_marginRight="4dp"
         android:background="?android:selectableItemBackground"
-        android:src="@drawable/ic_media_play" />
+        android:src="@drawable/ic_home" />
 
     <ImageButton
         android:id="@+id/imageButtonDelete"
