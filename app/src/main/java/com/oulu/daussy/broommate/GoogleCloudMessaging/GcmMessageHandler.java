@@ -3,6 +3,7 @@ package com.oulu.daussy.broommate.GoogleCloudMessaging;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
@@ -62,16 +63,25 @@ public class GcmMessageHandler extends IntentService {
 
     public void makeNotification() {
 
-        NotificationCompat.Builder mBuilder =
+        NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_delete)
                         .setContentTitle(title)
                         .setContentText(content);
 
+        //Vibration
+        builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+
+        //LED
+        builder.setLights(Color.BLUE, 3000, 3000);
+
+        //Ton
+        //builder.setSound(Uri.parse("uri://sadfasdfasdf.mp3"));
+
         int mNotificationId = 001;
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(mNotificationId, builder.build());
 
     }
 }
