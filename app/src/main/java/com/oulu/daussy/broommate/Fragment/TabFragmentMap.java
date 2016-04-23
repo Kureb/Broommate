@@ -160,7 +160,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
                 GoogleCloudMessage message = new GoogleCloudMessage();
                 message.addRegId("APA91bF4kfhXWCzzve8tqeglG4lfVVZbAvPd6CkTSGZ8SGHsMVzgNrpVmY5Nb2tuOVkqYQWRMCjP7IGBVvMv48ucDYS4TwV4Rs0cyPrZ07oQYJM5YPIRrXCX0rlcjdBtI62IKbMY8ZN2");
-                message.createData("Test Title", "Test Message");
+                message.createData(Config.NOTIF_TITLE, currentUser.getName() + Config.NOTIF_CONTENT);
 
 
 

@@ -1,14 +1,16 @@
 package com.oulu.daussy.broommate.GoogleCloudMessaging;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-
+import com.oulu.daussy.broommate.R;
 
 
 /**
@@ -16,7 +18,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
  */
 public class GcmMessageHandler extends IntentService {
 
-    String mes;
+    String title;
+    String content;
     private Handler handler;
     public GcmMessageHandler() {
         super("GcmMessageHandler");
@@ -37,8 +40,10 @@ public class GcmMessageHandler extends IntentService {
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
 
-        mes = extras.getString("title");
-        showToast();
+        title = extras.getString("title");
+        content = extras.getString("message");
+        //showToast();
+        makeNotification();
         Log.i("GCM", "Received : (" +messageType+")  "+extras.getString("title"));
 
         GcmBroadcastReceiver.completeWakefulIntent(intent);
@@ -48,9 +53,25 @@ public class GcmMessageHandler extends IntentService {
     public void showToast(){
         handler.post(new Runnable() {
             public void run() {
-                Toast.makeText(getApplicationContext(),mes , Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), title, Toast.LENGTH_LONG).show();
             }
         });
+
+    }
+
+
+    public void makeNotification() {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_delete)
+                        .setContentTitle(title)
+                        .setContentText(content);
+
+        int mNotificationId = 001;
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
     }
 }

@@ -36,6 +36,9 @@ public class Config {
     public static final String API_KEY              =   "AIzaSyBuzanSYxT1NGi3ghf73G2nHSGkClYJzi0";
 
 
+    public static final String NOTIF_TITLE          =   "Request from Broommate";
+    public static final String NOTIF_CONTENT        =   " asks for your location";
+
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
     public static final String STATE_DONE           =   "DONE";
