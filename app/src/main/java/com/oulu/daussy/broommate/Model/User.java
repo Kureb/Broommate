@@ -1,13 +1,19 @@
 package com.oulu.daussy.broommate.Model;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.Circle;
+import com.oulu.daussy.broommate.Configuration.Config;
+import com.oulu.daussy.broommate.Configuration.RequestHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by daussy on 03/04/16.
@@ -22,6 +28,15 @@ public class User {
     private String posY;
     private String lastUpdatePos;
     private String groupKey;
+    private String GCMid;
+
+    public String getGCMid() {
+        return GCMid;
+    }
+
+    public void setGCMid(String GCMid) {
+        this.GCMid = GCMid;
+    }
 
     public String getGroupKey() {
         return groupKey;
@@ -209,6 +224,44 @@ public class User {
         }
 
         return null;
+    }
+
+
+
+    public void update(final Activity activity, final User user){
+        class UpdateUser extends AsyncTask<Void, Void, String>{
+            ProgressDialog loading;
+            String name = user.getName();
+            String facebook_id = user.getFacebook_id();
+            String google_id = user.getGCMid();
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(activity,"Updating user in progress","Please wait...",false,false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+            }
+
+            @Override
+            protected String doInBackground(Void... v) {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put(Config.KEY_USER_NAME, name);
+                params.put(Config.KEY_USER_FACEBOOK_ID, facebook_id);
+                params.put(Config.KEY_USER_GOOGLE_ID, google_id);
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_UPDATE_USER, params);
+
+                return res;
+            }
+        }
+        UpdateUser uu = new UpdateUser();
+        uu.execute();
     }
 
 }

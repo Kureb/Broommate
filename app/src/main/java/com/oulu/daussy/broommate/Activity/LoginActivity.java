@@ -20,6 +20,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Model.CurrentUser;
@@ -30,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 
@@ -41,7 +43,9 @@ public class LoginActivity extends Activity {
     private CallbackManager callbackManager;
     public CurrentUser currentUser = CurrentUser.getInstance();
     private String JSON_STRING;
-
+    private GoogleCloudMessaging gcm;
+    private String gcmid;
+    private String PROJECT_NUMBER = "731765884851";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +75,6 @@ public class LoginActivity extends Activity {
                 displayToast("Login successful");
                 Intent myIntent = new Intent(getApplicationContext(), GroupActivity.class);
                 accessToken = AccessToken.getCurrentAccessToken();
-
                 GraphRequest request = GraphRequest.newMeRequest(
                         accessToken,
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -186,6 +189,7 @@ public class LoginActivity extends Activity {
                 if (!JSON_STRING.equals(Config.EMPTY_JSON)){
                     populateGroup();
                 }
+                getRegId();
                 loading.dismiss();
             }
 
@@ -264,6 +268,39 @@ public class LoginActivity extends Activity {
         AddUser au = new AddUser();
         au.execute();
     }
+
+
+    public void getRegId(){
+        class GoogleCloudMessagingID extends AsyncTask<Void, Void, String> {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    gcmid = gcm.register(PROJECT_NUMBER);
+                    msg = "Device registered, registration ID=" + gcmid;
+                    Log.d("GCM",  msg);
+
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+
+                }
+                return gcmid;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                currentUser.setGCMid(msg);
+                currentUser.update(LoginActivity.this, currentUser);
+            }
+        }
+        GoogleCloudMessagingID googleCloudMessagingID = new GoogleCloudMessagingID();
+        googleCloudMessagingID.execute();
+    }
+
+
 
 
     //    @Override

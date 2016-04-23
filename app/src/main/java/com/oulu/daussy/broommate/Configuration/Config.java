@@ -30,6 +30,7 @@ public class Config {
     public static final String URL_JOIN_GROUP       =   IP_SERVER + "Broommate/joinGroup.php";
     public static final String URL_GET_USER         =   IP_SERVER + "Broommate/getUser.php?id_group=";
     public static final String URL_GET_UNIQUE_USER  =   IP_SERVER + "Broommate/getUniqueUser.php?id_facebook=";
+    public static final String URL_UPDATE_USER      =   IP_SERVER + "Broommate/updateUser.php";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
@@ -77,6 +78,7 @@ public class Config {
     public static final String KEY_USER_LAST_UPDATE =   "last_update";
     public static final String KEY_USER_GROUP_NAME  =   "name";
     public static final String KEY_USER_GROUP_KEY   =   "key";
+    public static final String KEY_USER_GOOGLE_ID   =   "google_id";
 
     public static final String TAG_USER_ID          =   "id";
     public static final String TAG_USER_NAME        =   "name";
