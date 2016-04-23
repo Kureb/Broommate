@@ -4,6 +4,8 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
@@ -76,8 +78,9 @@ public class GcmMessageHandler extends IntentService {
         builder.setLights(Color.BLUE, 3000, 3000);
 
         //Ton
-        //builder.setSound(Uri.parse("uri://sadfasdfasdf.mp3"));
-
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(alarmSound);
+        
         int mNotificationId = 001;
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
