@@ -1,5 +1,6 @@
 package com.oulu.daussy.broommate.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -49,6 +50,8 @@ public class GroupActivity extends AppCompatActivity {
         textKeyJoinGroup = (EditText) findViewById(R.id.editKeyJoin);
         textKeyNewGroup  = (TextView) findViewById(R.id.editKeyGenerated);
 
+        populateView(View.INVISIBLE);
+
 
         buttonNewGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +74,7 @@ public class GroupActivity extends AppCompatActivity {
                 if (textKeyJoinGroup.getText().length() > 0){
                     buttonNewGroup.setVisibility(View.INVISIBLE);
                     textKeyNewGroup.setVisibility(View.INVISIBLE);
+                    textGroupName.setVisibility(View.INVISIBLE);
                     joinGroup(String.valueOf(textKeyJoinGroup.getText()));
                     nextActivity();
                 }
@@ -166,31 +170,49 @@ public class GroupActivity extends AppCompatActivity {
     private void fetchUser() {
         class GetJSON extends AsyncTask<Void, Void, String> {
 
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(GroupActivity.this,"Fetching data","Check group...",false,false);
+            }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
+                Log.d("String post", " = " + s.toString());
                 JSON_STRING = s;
-                if (JSON_STRING != "{\"result\":[]}\n"){
+                if (!JSON_STRING.equals(Config.EMPTY_JSON)){
                     populateGroup();
+                } else {
+                    populateView(View.VISIBLE);
                 }
+                loading.dismiss();
             }
 
 
             @Override
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
-                String s = rh.sendGetRequestParam(Config.URL_GET_UNIQUE_USER, currentUser.getFacebook_id());
-                Log.d("String", " = " + s.toString());
+                Log.d("REQUEST", Config.URL_GET_UNIQUE_USER + currentUser.getFacebook_id().toString());
+                String s = rh.sendGetRequestParam(Config.URL_GET_UNIQUE_USER, currentUser.getFacebook_id().toString());
+                Log.d("String in", " = " + s.toString());
                 return s;
             }
-
 
         }
         GetJSON gj = new GetJSON();
         gj.execute();
     }
 
+    public void populateView(int visibility) {
+        buttonNewGroup.setVisibility(visibility);
+        buttonJoinGroup.setVisibility(visibility);
+        textGroupName.setVisibility(visibility);
+        textKeyJoinGroup.setVisibility(visibility);
+        textKeyNewGroup.setVisibility(visibility);
+    }
 
     public void populateGroup() {
         JSONObject jsonObject = null;
@@ -200,9 +222,10 @@ public class GroupActivity extends AppCompatActivity {
             String groupkey = result.getJSONObject(0).getString(Config.KEY_USER_GROUP_ID);
             currentUser.setGroupKey(groupkey);
 
-            if (groupkey.length() > 0 && !groupkey.equals("null")){
-                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(myIntent);
+            if (groupkey.length() > 0){
+                nextActivity();
+            } else {
+                populateView(View.VISIBLE);
             }
 
         } catch (JSONException e) {

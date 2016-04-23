@@ -51,25 +51,14 @@ public class LoginActivity extends Activity {
         accessToken = AccessToken.getCurrentAccessToken();
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        //cancelButton = (Button) findViewById(R.id.cancel_button);
-
 
         //ask for permission to read our profil
         loginButton.setReadPermissions("public_profile");
 
-        //currentUser.setGroupKey("61d4ab33-fec3-447c-b30d-5d01a5dee34e");
 
         //if already logged in, start next activity
         if (AccessToken.getCurrentAccessToken()!=null) {
-            populateUser();
-            //fetchUser();
-            Intent myIntent = null;
-            //if (!hasGroup())
-                myIntent = new Intent(getApplicationContext(), GroupActivity.class);
-            //else
-            //    myIntent = new Intent(getApplicationContext(), MainActivity.class);
-
-            startActivity(myIntent);
+            populateUserWithGroup();
         }
 
 
@@ -80,13 +69,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 displayToast("Login successful");
-                //fetchUser();
-                Intent myIntent = null;
-                //if (!hasGroup())
-                    myIntent = new Intent(getApplicationContext(), GroupActivity.class);
-                //else
-                  //  myIntent = new Intent(getApplicationContext(), MainActivity.class);
-
+                Intent myIntent = new Intent(getApplicationContext(), GroupActivity.class);
                 accessToken = AccessToken.getCurrentAccessToken();
 
                 GraphRequest request = GraphRequest.newMeRequest(
@@ -110,8 +93,6 @@ public class LoginActivity extends Activity {
                 myIntent.putExtras(loginBundle);
 
                 startActivity(myIntent);
-
-                //finish();
             }
 
             @Override
@@ -138,6 +119,7 @@ public class LoginActivity extends Activity {
                         try {
                             currentUser.setName(object.getString("name"));
                             currentUser.setFacebook_id(object.getString("id"));
+                            Log.d("USER ", currentUser.getFacebook_id());
                         } catch (JSONException e) { }
                     }
                 }
@@ -147,6 +129,100 @@ public class LoginActivity extends Activity {
         parameters.putString("fields", "id,name" );
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    private void populateUserWithGroupKey() {
+        GraphRequest request = GraphRequest.newMeRequest(
+                accessToken,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        try {
+                            currentUser.setName(object.getString("name"));
+                            currentUser.setFacebook_id(object.getString("id"));
+                            Log.d("USER ", currentUser.getFacebook_id());
+                            fetchUser();
+                        } catch (JSONException e) { }
+                    }
+                }
+        );
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name" );
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private void populateUserWithGroup() {
+        populateUserWithGroupKey();
+
+        /*
+        Intent myIntent = null;
+        if (!currentUser.getGroupKey().isEmpty()){
+            myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        } else {
+            myIntent = new Intent(getApplicationContext(), GroupActivity.class);
+        }
+        startActivity(myIntent);
+        */
+    }
+
+    private void fetchUser() {
+        class GetJSON extends AsyncTask<Void, Void, String> {
+
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(LoginActivity.this,"Fetching data","Check group...",false,false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("String post", " = " + s.toString());
+                JSON_STRING = s;
+                if (!JSON_STRING.equals(Config.EMPTY_JSON)){
+                    populateGroup();
+                }
+                loading.dismiss();
+            }
+
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+//                Log.d("REQUEST", Config.URL_GET_UNIQUE_USER + currentUser.getFacebook_id().toString());
+                String s = rh.sendGetRequestParam(Config.URL_GET_UNIQUE_USER, currentUser.getFacebook_id());
+                Log.d("String in", " = " + s.toString());
+                return s;
+            }
+
+        }
+        GetJSON gj = new GetJSON();
+        gj.execute();
+    }
+
+
+    public void populateGroup() {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(JSON_STRING);
+            JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);
+            String groupkey = result.getJSONObject(0).getString(Config.KEY_USER_GROUP_ID);
+            currentUser.setGroupKey(groupkey);
+
+            if (groupkey.length() > 0){
+                nextActivity(MainActivity.class);
+            } else {
+                nextActivity(GroupActivity.class);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void addUser(User currentUser) {
@@ -160,13 +236,13 @@ public class LoginActivity extends Activity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                //loading = ProgressDialog.show(LoginActivity.this,"Adding user in progress","Please wait...",false,false);
+                loading = ProgressDialog.show(LoginActivity.this,"Adding user in progress","Please wait...",false,false);
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                //loading.dismiss();
+                loading.dismiss();
                 //Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
                 //Snackbar.make(findViewById(android.R.id.content), s, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
@@ -206,6 +282,12 @@ public class LoginActivity extends Activity {
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+
+    public void nextActivity(Class cls) {
+        Intent myIntent = new Intent(getApplicationContext(), cls);
+        startActivity(myIntent);
     }
 
 

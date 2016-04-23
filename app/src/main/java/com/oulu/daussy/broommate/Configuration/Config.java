@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public class Config {
 
-    public static final String IP_SERVER            =   "http://192.168.0.101:8888/";
+    public static final String IP_SERVER            =   "http://192.168.0.102:8888/";
 
     //Address of our scripts of the CRUD
     public static final String URL_ADD_TASK         =   IP_SERVER + "Broommate/addTask.php";
@@ -29,6 +29,7 @@ public class Config {
     public static final String URL_ADD_GROUP        =   IP_SERVER + "Broommate/addGroup.php";
     public static final String URL_JOIN_GROUP       =   IP_SERVER + "Broommate/joinGroup.php";
     public static final String URL_GET_USER         =   IP_SERVER + "Broommate/getUser.php?id_group=";
+    public static final String URL_GET_UNIQUE_USER  =   IP_SERVER + "Broommate/getUniqueUser.php?id_facebook=";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
@@ -79,5 +80,7 @@ public class Config {
 
     public static final String TAG_USER_ID          =   "id";
     public static final String TAG_USER_NAME        =   "name";
+
+    public static final String EMPTY_JSON           =   "{\"result\":[]}\n";
     
 }
