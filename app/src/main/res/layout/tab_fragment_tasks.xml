@@ -20,7 +20,7 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
         android:src="@drawable/fab_ic_add"
         app:borderWidth="0dp"

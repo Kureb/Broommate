@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Helper.ExpandableListAdapter;
@@ -78,6 +79,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         Arrays.fill(expandedGroup, Boolean.FALSE);
 
         addButton = (FloatingActionButton) view.findViewById(R.id.fab);
+
+
 
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +180,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
 
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
+        addButton.attachToListView(listView);
         //sheetLayout = (SheetLayout) view.findViewById(R.id.bottom_sheet);
         //sheetLayout.setFab(addButton);
         //sheetLayout.setFabAnimationEndListener(this);
