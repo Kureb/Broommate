@@ -5,18 +5,26 @@ package com.oulu.daussy.broommate.Fragment;
  */
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -33,6 +41,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -45,6 +58,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
     private FloatingActionButton fab;
     private CurrentUser currentUser = CurrentUser.getInstance();
     private Home home = Home.getInstance();
+    private ImageView qrcode;
 
     public TabFragmentOverview() {
     }
@@ -73,6 +87,45 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
 
             @Override
             public void onClick(View v) {
+
+                final Dialog dialog = new Dialog(getContext());
+                dialog.setContentView(R.layout.share_group);
+
+                Button cancelButton = (Button) dialog.findViewById(R.id.buttonCancelShare);
+                Button shareButton = (Button) dialog.findViewById(R.id.buttonShareShare);
+                TextView keyText = (TextView) dialog.findViewById(R.id.keyShare);
+                qrcode = (ImageView) dialog.findViewById(R.id.qrCode);
+
+                keyText.setText("Key to share is:\n" + currentUser.getGroupKey());
+
+                new DownloadImageTask((ImageView) dialog.findViewById(R.id.qrCode))
+                        .execute("http://api.qrserver.com/v1/create-qr-code/?data="+ currentUser.getGroupKey() +"&size=500x500");
+
+
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                shareButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", currentUser.getGroupKey());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(getContext(), "Copied in clipboard, ready to share", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+
+                });
+
+                dialog.setTitle("Share group");
+                dialog.show();
+
+
+                /*
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Want a new user?");
                 builder.setMessage("The key to share is:\n" + currentUser.getGroupKey())
@@ -92,12 +145,14 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 // Create the AlertDialog object and return it
                 builder.create();
                 builder.show();
+                */
             }
         });
 
         return view;
 
     }
+
 
 
     private void fetchUsers() {
@@ -162,6 +217,32 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
         listView.setAdapter(listAdapter);
 
     }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
 
 
     @Override
