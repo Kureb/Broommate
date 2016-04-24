@@ -248,6 +248,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         map = fragment.getMap();
         User user = null;
         numberOfLocations = 0;
+        map.clear();
         ArrayList<MarkerOptions> markers = new ArrayList<>();
         for (int i = 0; i < users.length; i++) {
             user = users[i];
@@ -257,6 +258,10 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                         .title(user.getName())
                         .snippet(("Last update " + user.timeAgo()))
                         .position(new LatLng(Double.parseDouble(user.getPosX()), Double.parseDouble(user.getPosY())));
+
+                if (user.getName().equals(currentUser.getName()))
+                    marker.alpha(0.7f);
+
                 markers.add(marker);
 
                 map.addMarker(marker);
@@ -278,7 +283,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                         userToAsk = u;
                 }
                 String key = userToAsk.getGCMid();
-                if (!key.isEmpty()){
+                if (!key.isEmpty() && !marker.getTitle().equals(currentUser.getName())){
                     DialogLocation dl = DialogLocation.newInstance(marker.getTitle().split(" ")[0], key);
                     dl.show(getFragmentManager(), "location");
                 }
@@ -439,7 +444,11 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         CircleOptions circleOptions = new CircleOptions().center(position).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(8);
         mCircle = map.addCircle(circleOptions);
 
-        MarkerOptions markerOptions = new MarkerOptions().position(position);
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(position)
+                .title(Config.HOME)
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         mMarker = map.addMarker(markerOptions);
     }
 
