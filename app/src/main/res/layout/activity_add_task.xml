@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".Activity.AddTaskActivity">
+    android:fitsSystemWindows="true">
 
 
     <EditText
@@ -32,7 +31,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CANCEL"
+        android:text="Cancel"
         android:id="@+id/buttonCancel"
         android:layout_marginLeft="54dp"
         android:layout_marginStart="54dp"

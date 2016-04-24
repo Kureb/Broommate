@@ -20,7 +20,7 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <com.melnykov.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:src="@drawable/fab_ic_add"
         app:borderWidth="0dp"
@@ -37,13 +37,5 @@
         fab:fab_colorPressed="@color/colorPrimary"
         fab:fab_colorRipple="@color/colorPrimaryDark"/>
 
-    <com.github.fabtransitionactivity.SheetLayout
-        android:id="@+id/bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        app:ft_container_gravity="center"
-        app:ft_color="@color/colorPrimary"
-        android:elevation="2dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

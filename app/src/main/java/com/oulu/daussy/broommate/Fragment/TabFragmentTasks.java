@@ -4,34 +4,32 @@ package com.oulu.daussy.broommate.Fragment;
  * Created by daussy on 14/03/16.
  */
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.fabtransitionactivity.SheetLayout;
-import com.melnykov.fab.FloatingActionButton;
-import com.oulu.daussy.broommate.Activity.AddTaskActivity;
-import com.oulu.daussy.broommate.Activity.LoginActivity;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Helper.ExpandableListAdapter;
-import com.oulu.daussy.broommate.Helper.ProfilePictureView;
 import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.Task;
 import com.oulu.daussy.broommate.R;
@@ -45,7 +43,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SheetLayout.OnFabAnimationEndListener {
+public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     // Button which allow us to add a new task
     private FloatingActionButton addButton;
@@ -53,7 +51,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     private ExpandableListAdapter listAdapter;
     // Expandable list view which will contains the task
     private ExpandableListView listView;
-    // DataHeader are the main categories (here, todo, doing, done)
+    // DataHeader are the main categories
     private List<String> listDataHeader;
     // DataChild contains the object to add in the categories
     private HashMap<String, List<Task>> listDataChild;
@@ -65,10 +63,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     private View lastClicked;
     // to remember which group are expanded or nto
     private boolean[] expandedGroup;
-
-    private SheetLayout sheetLayout;
-
-    private static final int REQUEST_CODE = 1;
 
     private CurrentUser currentUser = CurrentUser.getInstance();
 
@@ -90,16 +84,102 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
             // When we click on the button, we are sent the activity which allows us to add a new task
             @Override
             public void onClick(View v) {
-                sheetLayout.expandFab();
+                //sheetLayout.expandFab();
+                final Dialog dialog = new Dialog(getContext());
+                dialog.setContentView(R.layout.activity_add_task);
+
+                Button cancelButton = (Button) dialog.findViewById(R.id.buttonCancel);
+                Button addButtonTask = (Button) dialog.findViewById(R.id.buttonAdd);
+                final EditText titleTask = (EditText) dialog.findViewById(R.id.titleTask);
+                // Spinner
+                List<String> spinnerArray =  new ArrayList<String>();
+                spinnerArray.add("LOW");
+                spinnerArray.add("MEDIUM");
+                spinnerArray.add("HIGH");
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerArray);
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                final Spinner spinner = (Spinner) dialog.findViewById(R.id.spinnerPriority);
+                spinner.setAdapter(adapter);
+
+                //Cancel = back
+
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+
+                addButtonTask.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String name = titleTask.getText().toString().trim();
+                        final String priority = spinner.getSelectedItem().toString();
+                        final String owner = currentUser.getFacebook_id();
+                        addTask(v, name, priority, owner);
+                        dialog.dismiss();
+                        onRefresh();
+                    }
+                });
+
+                dialog.setTitle("New task");
+                dialog.show();
             }
+
+            private void addTask(final View v, String nameTask, String priorityTask, String ownerTask) {
+
+                final String name = nameTask;
+                final String priority = priorityTask;
+                final String owner = ownerTask;
+
+
+                class AddTask extends AsyncTask<Void, Void, String>{
+
+                    //ProgressDialog loading;
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        super.onPostExecute(s);
+                        //Snackbar.make(v, s, Snackbar.LENGTH_LONG).setAction("Action",null).show();
+                    }
+
+                    @Override
+                    protected String doInBackground(Void... v) {
+                        HashMap<String,String> params = new HashMap<>();
+
+                        params.put(Config.KEY_TASK_NAME, name);
+                        params.put(Config.KEY_TASK_PRIORITY, priority);
+                        params.put(Config.KEY_TASK_OWNER, owner);
+                        params.put(Config.KEY_USER_GROUP_KEY, currentUser.getGroupKey());
+
+                        RequestHandler rh = new RequestHandler();
+                        String res = rh.sendPostRequest(Config.URL_ADD_TASK, params);
+
+                        return res;
+                    }
+                }
+
+                AddTask at = new AddTask();
+                at.execute();
+
+            }
+
+
         });
 
 
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
-        addButton.attachToListView(listView);
-        sheetLayout = (SheetLayout) view.findViewById(R.id.bottom_sheet);
-        sheetLayout.setFab(addButton);
-        sheetLayout.setFabAnimationEndListener(this);
+        //sheetLayout = (SheetLayout) view.findViewById(R.id.bottom_sheet);
+        //sheetLayout.setFab(addButton);
+        //sheetLayout.setFabAnimationEndListener(this);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -561,17 +641,4 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
-    @Override
-    public void onFabAnimationEnd() {
-        Intent myIntent = new Intent(getActivity().getApplicationContext(), AddTaskActivity.class);
-        startActivityForResult(myIntent, REQUEST_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE){
-            sheetLayout.contractFab();
-        }
-    }
 }
