@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
+import com.oulu.daussy.broommate.Helper.DialogLocation;
 import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.GoogleCloudMessage;
 import com.oulu.daussy.broommate.Model.Home;
@@ -134,6 +136,11 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         });
 
 
+
+
+
+
+
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -159,7 +166,13 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                 HashMap<String, String> params = new HashMap<>();
 
                 GoogleCloudMessage message = new GoogleCloudMessage();
-                message.addRegId("APA91bF4kfhXWCzzve8tqeglG4lfVVZbAvPd6CkTSGZ8SGHsMVzgNrpVmY5Nb2tuOVkqYQWRMCjP7IGBVvMv48ucDYS4TwV4Rs0cyPrZ07oQYJM5YPIRrXCX0rlcjdBtI62IKbMY8ZN2");
+
+                for (User u: users) {
+                    if (!u.getName().equals(currentUser.getName()))
+                       if (!u.getGCMid().isEmpty())
+                           message.addRegId(u.getGCMid());
+                }
+
                 message.createData(Config.NOTIF_TITLE, currentUser.getName() + Config.NOTIF_CONTENT);
 
 
@@ -214,6 +227,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                 user.setPosX(jo.getString(Config.KEY_USER_POSX));
                 user.setPosY(jo.getString(Config.KEY_USER_POSY));
                 user.setLastUpdatePos(jo.getString(Config.KEY_USER_LAST_UPDATE));
+                user.setGCMid(jo.getString(Config.KEY_USER_GOOGLE_ID));
 
 
                 users[i] = user;
@@ -246,8 +260,31 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                 markers.add(marker);
 
                 map.addMarker(marker);
+
             }
         }
+
+
+        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                //Toast.makeText(getContext(), "INFO " + marker.toString(), Toast.LENGTH_LONG).show();
+                String name = marker.getTitle();
+                User userToAsk = null;
+                for (User u:users
+                     ) {
+                    if (u.getName().equals(marker.getTitle()))
+                        userToAsk = u;
+                }
+                String key = userToAsk.getGCMid();
+                if (!key.isEmpty()){
+                    DialogLocation dl = DialogLocation.newInstance(marker.getTitle().split(" ")[0], key);
+                    dl.show(getFragmentManager(), "location");
+                }
+            }
+
+        });
 
         LatLng latLng = new LatLng(Double.parseDouble(home.getPosX()), Double.parseDouble(home.getPosY()));
         drawMarkerWithCircle(latLng);
@@ -269,6 +306,9 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 
         map.animateCamera(cu); //or moveCamera without animation
+
+
+
 
     }
 
