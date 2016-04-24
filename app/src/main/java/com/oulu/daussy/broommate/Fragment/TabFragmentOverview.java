@@ -4,6 +4,11 @@ package com.oulu.daussy.broommate.Fragment;
  * Created by daussy on 14/03/16.
  */
 
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -60,6 +65,33 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
                 fetchUsers();
+            }
+        });
+
+
+        fab.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Want a new user?");
+                builder.setMessage("The key to share is:\n" + currentUser.getGroupKey())
+                        .setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("label", currentUser.getGroupKey());
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(getContext(), "Copied in clipboard, ready to share", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                // Create the AlertDialog object and return it
+                builder.create();
+                builder.show();
             }
         });
 
