@@ -1,6 +1,9 @@
 package com.oulu.daussy.broommate.Helper;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.Home;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
@@ -24,6 +28,7 @@ public class ListAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<User> listUser;
     private Home home = Home.getInstance();
+    private CurrentUser currentUser = CurrentUser.getInstance();
 
     public ListAdapter(Context context, ArrayList<User> listUser){
         this.context = context;
@@ -64,15 +69,13 @@ public class ListAdapter extends BaseAdapter {
         TextView userPosition = (TextView) convertView
                 .findViewById(R.id.positionUserText);
 
-        TextView homeOrNot = (TextView) convertView
-                .findViewById(R.id.home);
-
 
         userName.setText(user.getName());
+        if (user.getName().equals(currentUser.getName()))
+            userName.setTypeface(null, Typeface.BOLD);
         userPicture.setProfileId(user.getFacebook_id());
         String pos = user.isHome() ? "Localised at home " : "Localised not at home ";
         userPosition.setText(pos + user.timeAgo());
-        //homeOrNot.setText(user.isHome() ? "Is at home" : "Is not at home");
 
         return convertView;
     }
