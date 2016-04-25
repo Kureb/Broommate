@@ -8,6 +8,15 @@ public class Home {
     private static Home HOME;
     private String posX;
     private String posY;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getPosY() {
         return posY;

@@ -19,11 +19,14 @@
                   u.last_update as last_update,
                   u.google_id as google_id,
         		      h.posX as posX_home,
-                  h.posY as posY_home
+                  h.posY as posY_home,
+                  g.name as group_name
         from user u
         join home h
+        join `group` g
         where u.group_id = '$group_id'
-          and h.group_id = '$group_id'";
+          and h.group_id = '$group_id'
+          and g.key = '$group_id'";
 
 
   $r = mysqli_query($con, $sql);
@@ -44,7 +47,8 @@
    "last_update" => $row['last_update'],
    "google_id" => $row['google_id'],
    "posX_home" => $row['posX_home'],
-   "posY_home" => $row['posY_home']
+   "posY_home" => $row['posY_home'],
+   "group_name" => $row['group_name']
  ));
  }
 

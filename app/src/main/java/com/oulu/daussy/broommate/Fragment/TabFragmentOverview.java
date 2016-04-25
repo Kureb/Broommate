@@ -40,6 +40,7 @@ import com.oulu.daussy.broommate.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +60,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
     private CurrentUser currentUser = CurrentUser.getInstance();
     private Home home = Home.getInstance();
     private ImageView qrcode;
+    private TextView groupName;
 
     public TabFragmentOverview() {
     }
@@ -70,6 +72,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
         listView = (ListView) view.findViewById(R.id.listview_overview);
         fab = (FloatingActionButton) view.findViewById(R.id.fab_overview);
         fab.attachToListView(listView);
+        groupName = (TextView) view.findViewById(R.id.groupName);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout_overview);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -96,7 +99,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 TextView keyText = (TextView) dialog.findViewById(R.id.keyShare);
                 qrcode = (ImageView) dialog.findViewById(R.id.qrCode);
 
-                keyText.setText("Key to share is:\n" + currentUser.getGroupKey());
+                keyText.setText("Flash the QRCode or copy key in clipboard.");
 
                 new DownloadImageTask((ImageView) dialog.findViewById(R.id.qrCode))
                         .execute("http://api.qrserver.com/v1/create-qr-code/?data="+ currentUser.getGroupKey() +"&size=500x500");
@@ -115,13 +118,13 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("label", currentUser.getGroupKey());
                         clipboard.setPrimaryClip(clip);
-                        Toast.makeText(getContext(), "Copied in clipboard, ready to share", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Key copied in clipboard, ready to share", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
 
                 });
 
-                dialog.setTitle("Share group");
+                dialog.setTitle("Share group " + home.getName());
                 dialog.show();
 
 
@@ -207,6 +210,9 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
 
             home.setPosX(jo.getString("posX_home"));
             home.setPosY(jo.getString("posY_home"));
+            home.setName(jo.getString("group_name"));
+
+            groupName.setText(home.getName());
             
         } catch (JSONException e) {
             e.printStackTrace();

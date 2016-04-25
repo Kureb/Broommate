@@ -6,6 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/groupName"
+        android:paddingLeft="4dp"
+        android:textSize="18dp"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout_overview"
@@ -18,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@android:color/transparent"
-            android:dividerHeight="5dp"/>
+            android:dividerHeight="5dp"
+            android:paddingTop="25dp"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
