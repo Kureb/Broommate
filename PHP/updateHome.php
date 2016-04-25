@@ -4,12 +4,12 @@ if($_SERVER['REQUEST_METHOD'] = 'POST') {
 
   $posX = $_POST['posX'];
   $posY = $_POST['posY'];
-  $id = 1;
+  $group_key = $_POST['key'];
 
   $sql = "UPDATE home
           SET posX = '$posX',
               posY = '$posY'
-          WHERE id = $id";
+          WHERE group_id = '$group_key'";
 
 
 
