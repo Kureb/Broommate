@@ -437,7 +437,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void drawMarkerWithCircle(LatLng position){
-        double radiusInMeters = 1000.0;
+        double radiusInMeters = Config.SIZE_CIRCLE;
         int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill
 

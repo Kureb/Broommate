@@ -137,7 +137,7 @@ public class User {
         Location.distanceBetween(posX, posY,
                 posX_home, posY_home, distance);
 
-        if( distance[0] > 5000  ){
+        if( distance[0] > Config.SIZE_CIRCLE  ){
             return false;
         } else {
             return true;
