@@ -16,7 +16,8 @@ import java.net.URL;
  */
 public class Config {
 
-    public static final String IP_SERVER            =   "http://192.168.0.102:8888/";
+    //public static final String IP_SERVER            =   "http://192.168.0.102:8888/";
+    public static final String IP_SERVER            =   "http://alexandredaussy.fr/";
 
     //Address of our scripts of the CRUD
     public static final String URL_ADD_TASK         =   IP_SERVER + "Broommate/addTask.php";
@@ -34,6 +35,8 @@ public class Config {
 
     public static final String URL_GOOGLE_CLOUD_MSG =   "https://android.googleapis.com/gcm/send";
     public static final String API_KEY              =   "AIzaSyBuzanSYxT1NGi3ghf73G2nHSGkClYJzi0";
+    public static final double SIZE_CIRCLE          =   50.0; //50 meters is the perimeter in which we can say
+                                                                //that we are at home
 
 
     public static final String NOTIF_TITLE          =   "Request from Broommate";
