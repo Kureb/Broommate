@@ -7,6 +7,10 @@ package com.oulu.daussy.broommate.Fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -274,18 +278,19 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
             @Override
             public void onInfoWindowClick(Marker marker) {
-                //Toast.makeText(getContext(), "INFO " + marker.toString(), Toast.LENGTH_LONG).show();
-                String name = marker.getTitle();
-                User userToAsk = null;
-                for (User u:users
-                     ) {
-                    if (u.getName().equals(marker.getTitle()))
-                        userToAsk = u;
-                }
-                String key = userToAsk.getGCMid();
-                if (!key.isEmpty() && !marker.getTitle().equals(currentUser.getName())){
-                    DialogLocation dl = DialogLocation.newInstance(marker.getTitle().split(" ")[0], key);
-                    dl.show(getFragmentManager(), "location");
+                if (!marker.getTitle().equals(Config.HOME)){
+                    String name = marker.getTitle();
+                    User userToAsk = null;
+                    for (User u:users
+                            ) {
+                        if (u.getName().equals(marker.getTitle()))
+                            userToAsk = u;
+                    }
+                    String key = userToAsk.getGCMid();
+                    if (!key.isEmpty() && !marker.getTitle().equals(currentUser.getName())){
+                        DialogLocation dl = DialogLocation.newInstance(marker.getTitle().split(" ")[0], key);
+                        dl.show(getFragmentManager(), "location");
+                    }
                 }
             }
 
@@ -444,11 +449,16 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         CircleOptions circleOptions = new CircleOptions().center(position).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(8);
         mCircle = map.addCircle(circleOptions);
 
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.color_icons_green_home);
+        //Bitmap b= BitmapDescriptorFactory.fromResource(R.drawable.color_icons_green_home);
+        Bitmap bhalfsize=Bitmap.createScaledBitmap(icon, icon.getWidth()/12,icon.getHeight()/12, false);
+
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(position)
                 .title(Config.HOME)
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home));
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                //.rotation((float) 45.0)
+                .icon(BitmapDescriptorFactory.fromBitmap(bhalfsize));
+                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         mMarker = map.addMarker(markerOptions);
     }
 

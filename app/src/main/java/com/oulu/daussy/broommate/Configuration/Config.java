@@ -41,7 +41,7 @@ public class Config {
 
     public static final String NOTIF_TITLE          =   "Request from Broommate";
     public static final String NOTIF_CONTENT        =   " asks for your location";
-    public static final String HOME                 =   "home";
+    public static final String HOME                 =   "Home";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
