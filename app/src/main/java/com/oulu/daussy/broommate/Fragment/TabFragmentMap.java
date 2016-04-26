@@ -243,7 +243,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
             populateMap();
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -214,7 +214,7 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
 
             groupName.setText(home.getName());
             
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
