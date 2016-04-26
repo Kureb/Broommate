@@ -4,7 +4,9 @@ package com.oulu.daussy.broommate.Fragment;
  * Created by daussy on 14/03/16.
  */
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -68,7 +70,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
     private CurrentUser currentUser = CurrentUser.getInstance();
 
-    private ArrayList<User> listUser;
 
     public TabFragmentTasks() {
     }
@@ -83,14 +84,13 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
         addButton = (FloatingActionButton) view.findViewById(R.id.fab);
 
-
-
-
         addButton.setOnClickListener(new View.OnClickListener() {
-            // When we click on the button, we are sent the activity which allows us to add a new task
+
             @Override
+            /*
+             * New dialog to add a new task
+             */
             public void onClick(View v) {
-                //sheetLayout.expandFab();
                 final Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(R.layout.activity_add_task);
 
@@ -110,7 +110,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 spinner.setAdapter(adapter);
 
                 //Cancel = back
-
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -144,8 +143,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
                 class AddTask extends AsyncTask<Void, Void, String>{
 
-                    //ProgressDialog loading;
-
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -154,7 +151,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                     @Override
                     protected void onPostExecute(String s) {
                         super.onPostExecute(s);
-                        //Snackbar.make(v, s, Snackbar.LENGTH_LONG).setAction("Action",null).show();
                     }
 
                     @Override
@@ -207,7 +203,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-        // Listview Group collasped listener
+        // Listview Group collapsed listener
         listView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
@@ -258,7 +254,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                     // to know why we delete the item as soon as the user taps the delete button
                     @Override
                     public void onClick(View v) {
-                        goPreviousState(view, v, task);
+                        goPreviousState(task);
                     }
                 });
 
@@ -266,7 +262,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 v.findViewById(R.id.imageNextStep).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        goNextState(view, v, task);
+                        goNextState(task);
                     }
                 });
 
@@ -279,52 +275,29 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     /**
      * Change the state of the selected task to the next one
      */
-    private void goNextState(final View view, View nextStateButton, final Task task) {
-        final String currentState = task.getState();
-        String nextState = task.getNextState();
+    private void goNextState(final Task task) {
+        final String nextState = task.getNextState();
 
-        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        //TODO find a way to change the color of the task to white and put it back to orginal color in setAction onClick
-        final View nextButton = nextStateButton;
-        nextButton.setVisibility(View.INVISIBLE);
-        final Snackbar snackbar = Snackbar.make(nextButton, "Updating the task as " + nextState + " by you.", Snackbar.LENGTH_LONG);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-
-        CurrentUser currentUser = CurrentUser.getInstance();
-        changeTaskStatus(task, nextState, currentUser.getFacebook_id());
-
-        final boolean[] dismiss = {false};
-        snackbar.setAction("Undo", new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               view.setBackgroundColor(Color.TRANSPARENT);
-               nextButton.setVisibility(View.VISIBLE);
-               String s = "Status restored";
-               Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
-               View snackbarView = snackbarCanceld.getView();
-               snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-               TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-               snackbarCanceld.show();
-               dismiss[0] = true;
-               changeTaskStatus(task, currentState);
-           }
-        });
-
-        //if (!dismiss[0])
-            sendNotification(task);
-
-        snackbar.setCallback(new Snackbar.Callback() {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
-            public void onDismissed(Snackbar snackbar, int event) {
-                super.onDismissed(snackbar, event);
-                if (event != DISMISS_EVENT_ACTION && event != DISMISS_EVENT_CONSECUTIVE)
-                    onRefresh();
+            public void onClick(DialogInterface dialog, int which) {
+                changeTaskStatus(task, nextState, currentUser.getFacebook_id());
+                if (!task.getOwner().equals(currentUser.getName()))
+                    sendNotification(task);
+                onRefresh();
             }
         });
-        snackbar.show();
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setTitle(nextState.equals(Config.STATE_DOING) ? "Assign task to myself?" : "Mark task as done?");
+        alertDialog.show();
     }
 
 
@@ -333,7 +306,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
             @Override
             protected String doInBackground(Void... p) {
-                HashMap<String, String> params = new HashMap<>();
                 GoogleCloudMessage message = new GoogleCloudMessage();
                 message.addRegId(task.getOwnerGoogleId());
                 message.createData(Config.NOTIF_TITLE, currentUser.getName() + (task.getState().equals(Config.STATE_TODO) ? Config.NOTIF_CONTENT_TASK_DOING : Config.NOTIF_CONTENT_TASK_DONE));
@@ -349,49 +321,31 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     /**
      * Change the state of the selected task to the previous state
      */
-    private void goPreviousState(final View view, View deleteButtonView, final Task task) {
-        final String currentState = task.getState();
-        String previousState = task.getPreviousState();
+    private void goPreviousState(final Task task) {
+        final String previousState = task.getPreviousState();
 
-        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        //TODO find a way to change the color of the task to white and put it back to orginal color in setAction onClick
-        final View delButton = deleteButtonView;
-        delButton.setVisibility(View.INVISIBLE);
-        final Snackbar snackbar = Snackbar.make(deleteButtonView, previousState.equals(Config.STATE_DELETED) ? "Deleting the task in progress.." : "Put task in " + previousState + " again", Snackbar.LENGTH_LONG);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-
-        changeTaskStatus(task, previousState);
-
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                view.setBackgroundColor(Color.TRANSPARENT);
-                delButton.setVisibility(View.VISIBLE);
-                //text.setTextColor(colorText);
-                String s = "Status restored";
-                Snackbar snackbarCanceld = Snackbar.make(v, s, Snackbar.LENGTH_LONG);
-                View snackbarView = snackbarCanceld.getView();
-                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                snackbarCanceld.show();
-
-                changeTaskStatus(task, currentState);
+            public void onClick(DialogInterface dialog, int which) {
+                changeTaskStatus(task, previousState);
+                if (!task.getOwner().equals(currentUser.getName()))
+                    sendNotification(task);
+                onRefresh();
             }
         });
-        snackbar.setCallback(new Snackbar.Callback() {
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
-            public void onDismissed(Snackbar snackbar, int event) {
-                super.onDismissed(snackbar, event);
-                // if snackbar dismissed from an action click OR from a new Snackbar being shown
-                // we don't do anything
-                // otherwise we refresh the fragment
-                if (event != DISMISS_EVENT_ACTION && event != DISMISS_EVENT_CONSECUTIVE)
-                    onRefresh();
+            public void onClick(DialogInterface dialog, int which) {
+
             }
         });
-        snackbar.show();
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setTitle("Put back in " + previousState + "?");
+        alertDialog.show();
+
+
     }
 
 
