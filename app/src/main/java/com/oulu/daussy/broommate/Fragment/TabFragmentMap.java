@@ -177,7 +177,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                            message.addRegId(u.getGCMid());
                 }
 
-                message.createData(Config.NOTIF_TITLE, currentUser.getName() + Config.NOTIF_CONTENT);
+                message.createData(Config.NOTIF_TITLE, currentUser.getName() + Config.NOTIF_CONTENT_LOCATION);
 
 
 

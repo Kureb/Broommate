@@ -67,7 +67,7 @@ public class DialogLocation extends DialogFragment {
                 HashMap<String, String> params = new HashMap<>();
                 GoogleCloudMessage message = new GoogleCloudMessage();
                 message.addRegId(key);
-                message.createData(Config.NOTIF_TITLE, currentUser.getName() + Config.NOTIF_CONTENT);
+                message.createData(Config.NOTIF_TITLE, currentUser.getName() + Config.NOTIF_CONTENT_LOCATION);
                 RequestHandler rh = new RequestHandler();
                 String res = rh.sendGoogleRequest(message);
                 return res;

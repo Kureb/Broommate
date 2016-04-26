@@ -39,9 +39,11 @@ public class Config {
                                                                 //that we are at home
 
 
-    public static final String NOTIF_TITLE          =   "Request from Broommate";
-    public static final String NOTIF_CONTENT        =   " asks for your location";
-    public static final String HOME                 =   "Home";
+    public static final String NOTIF_TITLE              =   "Request from Broommate";
+    public static final String NOTIF_CONTENT_LOCATION   =   " asks for your location";
+    public static final String NOTIF_CONTENT_TASK_DOING =   " is doing a task you added";
+    public static final String NOTIF_CONTENT_TASK_DONE  =   " has done a task you added";
+    public static final String HOME                     =   "Home";
 
     public static final String STATE_TODO           =   "TODO";
     public static final String STATE_DOING          =   "DOING";
