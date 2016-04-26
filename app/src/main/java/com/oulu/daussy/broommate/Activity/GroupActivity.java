@@ -2,6 +2,7 @@ package com.oulu.daussy.broommate.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Interpolator;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,9 +35,9 @@ public class GroupActivity extends AppCompatActivity {
     private Button buttonNewGroup;
     private Button buttonJoinGroup;
     private EditText textGroupName;
-    private TextView textKeyNewGroup;
     private EditText textKeyJoinGroup;
     private String JSON_STRING;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,14 @@ public class GroupActivity extends AppCompatActivity {
         buttonJoinGroup = (Button)   findViewById(R.id.buttonJoinGroup);
         textGroupName   = (EditText) findViewById(R.id.editGroupName);
         textKeyJoinGroup = (EditText) findViewById(R.id.editKeyJoin);
-        textKeyNewGroup  = (TextView) findViewById(R.id.editKeyGenerated);
+
+
+        String htmlText = "<html><body style=\"text-align:justify\"> %s </body></html>";
+        String myData = "You can either name and create a new group in which you will automatically belong, or you can enter a key somebody else shared with you to join his group. If you create your own group you will be able to share your key with your friends in the next screen.";
+        webView = (WebView) findViewById(R.id.webview);
+        webView.loadData(String.format(htmlText, myData), "text/html", "utf-8");
+        webView.setBackgroundColor(Color.TRANSPARENT);
+
 
         populateView(View.INVISIBLE);
 
@@ -57,11 +66,9 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (textGroupName.getText().length() > 0){
-                    buttonJoinGroup.setVisibility(View.INVISIBLE);
-                    textKeyJoinGroup.setVisibility(View.INVISIBLE);
-                    textKeyNewGroup.setText(generateKey());
-                    createNewGroup(String.valueOf(textGroupName.getText()), String.valueOf(textKeyNewGroup.getText()));
-                    joinGroup(String.valueOf(textKeyNewGroup.getText()));
+                    String textKeyNewGroup = generateKey();
+                    createNewGroup(String.valueOf(textGroupName.getText()), textKeyNewGroup);
+                    joinGroup(textKeyNewGroup);
                     nextActivity();
                 }
             }
@@ -72,9 +79,6 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (textKeyJoinGroup.getText().length() > 0){
-                    buttonNewGroup.setVisibility(View.INVISIBLE);
-                    textKeyNewGroup.setVisibility(View.INVISIBLE);
-                    textGroupName.setVisibility(View.INVISIBLE);
                     joinGroup(String.valueOf(textKeyJoinGroup.getText()));
                     nextActivity();
                 }
@@ -122,15 +126,34 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                //loading.dismiss();
-                //Toast.makeText(GroupActivity.this, s, Toast.LENGTH_LONG).show();
-                //Snackbar.make(findViewById(android.R.id.content), s, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         }
 
         NewGroup ng = new NewGroup();
         ng.execute();
     }
+
+/*
+    public void checkExistGroup(final String key) {
+        class CheckGroup extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected String doInBackground(Void... p) {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put(Config.KEY_USER_GROUP_ID, key);
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_CHECK_GROUP, params);
+
+                return res;
+            }
+        }
+
+        CheckGroup cg = new CheckGroup();
+        cg.execute();
+    }
+    */
 
     public void joinGroup(final String key) {
         //TODO check if group really exists
@@ -211,7 +234,6 @@ public class GroupActivity extends AppCompatActivity {
         buttonJoinGroup.setVisibility(visibility);
         textGroupName.setVisibility(visibility);
         textKeyJoinGroup.setVisibility(visibility);
-        textKeyNewGroup.setVisibility(visibility);
     }
 
     public void populateGroup() {
@@ -223,7 +245,7 @@ public class GroupActivity extends AppCompatActivity {
             currentUser.setGroupKey(groupkey);
 
             if (groupkey.length() > 0){
-                nextActivity();
+                //nextActivity();
             } else {
                 populateView(View.VISIBLE);
             }

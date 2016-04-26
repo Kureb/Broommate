@@ -15,52 +15,78 @@
         android:layout_height="wrap_content"
         android:id="@+id/editGroupName"
         android:layout_alignParentTop="true"
-        android:hint="Enter the group's name"
+        android:hint="Enter the group's name you want to create"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/editKeyGenerated"
-        android:layout_alignEnd="@+id/editKeyGenerated" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
-    <TextView
+
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editKeyGenerated"
+        android:text="Create group"
+        android:id="@+id/buttonCreateGroup"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@color/white"
         android:layout_below="@+id/editGroupName"
-        android:text="Key"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        android:id="@+id/buttonCreateGroup"
-        android:layout_below="@+id/editKeyGenerated"
-        android:layout_alignLeft="@+id/editKeyGenerated"
-        android:layout_alignStart="@+id/editKeyGenerated"
-        android:layout_marginTop="39dp" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editKeyJoin"
-        android:layout_below="@+id/buttonCreateGroup"
-        android:layout_alignLeft="@+id/buttonCreateGroup"
-        android:layout_alignStart="@+id/buttonCreateGroup"
-        android:layout_marginTop="128dp"
-        android:hint="Enter the group's key"
-        android:layout_alignRight="@+id/editKeyGenerated"
-        android:layout_alignEnd="@+id/editKeyGenerated" />
+        android:hint="Enter the group's key you want to join"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Join"
+        android:text="Join group"
         android:id="@+id/buttonJoinGroup"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@color/white"
         android:layout_below="@+id/editKeyJoin"
-        android:layout_alignLeft="@+id/editKeyJoin"
-        android:layout_alignStart="@+id/editKeyJoin"
-        android:layout_marginTop="35dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="OR"
+        android:id="@+id/textView"
+        android:layout_above="@+id/editKeyJoin"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="53dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="40dp"
+        android:textAlignment="center"/>
+
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/webview"
+        android:layout_below="@+id/buttonJoinGroup"
+        android:layout_alignRight="@+id/buttonJoinGroup"
+        android:layout_alignEnd="@+id/buttonJoinGroup"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"/>
+
+
 </RelativeLayout>
