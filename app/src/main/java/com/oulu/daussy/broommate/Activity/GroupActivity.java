@@ -1,6 +1,8 @@
 package com.oulu.daussy.broommate.Activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -38,6 +40,7 @@ public class GroupActivity extends AppCompatActivity {
     private EditText textKeyJoinGroup;
     private String JSON_STRING;
     private WebView webView;
+    private Button qr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class GroupActivity extends AppCompatActivity {
         buttonJoinGroup = (Button)   findViewById(R.id.buttonJoinGroup);
         textGroupName   = (EditText) findViewById(R.id.editGroupName);
         textKeyJoinGroup = (EditText) findViewById(R.id.editKeyJoin);
+        qr = (Button) findViewById(R.id.qr);
 
 
         String htmlText = "<html><body style=\"text-align:justify\"> %s </body></html>";
@@ -60,6 +64,20 @@ public class GroupActivity extends AppCompatActivity {
 
 
         populateView(View.INVISIBLE);
+
+        qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+
+                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                startActivityForResult(intent, 1);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getApplicationContext(), "No QR reader app installed", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
 
         buttonNewGroup.setOnClickListener(new View.OnClickListener() {
@@ -255,5 +273,18 @@ public class GroupActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1)
+            if (resultCode == Activity.RESULT_OK) {
+                String contents = data.getStringExtra("SCAN_RESULT");
+                String format = data.getStringExtra("SCAN_RESULT_FORMAT");
+                //Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_SHORT).show();
+                textKeyJoinGroup.setText(contents);
+                // TODO: Do something here with it
+            }// if result_ok
+    }// onactivityresult
 
 }

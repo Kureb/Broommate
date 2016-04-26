@@ -57,8 +57,8 @@
         android:layout_below="@+id/editKeyJoin"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_toStartOf="@+id/qr"
+        android:layout_toLeftOf="@+id/qr" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -82,11 +82,23 @@
         android:layout_height="match_parent"
         android:id="@+id/webview"
         android:layout_below="@+id/buttonJoinGroup"
-        android:layout_alignRight="@+id/buttonJoinGroup"
-        android:layout_alignEnd="@+id/buttonJoinGroup"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/editKeyJoin"
+        android:layout_alignEnd="@+id/editKeyJoin" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QR"
+        android:id="@+id/qr"
+        android:layout_alignTop="@+id/buttonJoinGroup"
+        android:layout_alignRight="@+id/editKeyJoin"
+        android:layout_alignEnd="@+id/editKeyJoin"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@color/white"/>
 
 
 </RelativeLayout>
