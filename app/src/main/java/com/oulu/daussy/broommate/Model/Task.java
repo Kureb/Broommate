@@ -17,6 +17,15 @@ public class Task {
     private String date_end;
     private String owner_name;
     private String worker_name;
+    private String ownerGoogleId;
+
+    public String getOwnerGoogleId() {
+        return ownerGoogleId;
+    }
+
+    public void setOwnerGoogleId(String ownerGoogleId) {
+        this.ownerGoogleId = ownerGoogleId;
+    }
 
     public String getWorker_name() {
         return worker_name;

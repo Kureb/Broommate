@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -32,7 +31,9 @@ import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
 import com.oulu.daussy.broommate.Helper.ExpandableListAdapter;
 import com.oulu.daussy.broommate.Model.CurrentUser;
+import com.oulu.daussy.broommate.Model.GoogleCloudMessage;
 import com.oulu.daussy.broommate.Model.Task;
+import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
 import org.json.JSONArray;
@@ -66,6 +67,8 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
     private boolean[] expandedGroup;
 
     private CurrentUser currentUser = CurrentUser.getInstance();
+
+    private ArrayList<User> listUser;
 
     public TabFragmentTasks() {
     }
@@ -181,9 +184,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
         addButton.attachToListView(listView);
-        //sheetLayout = (SheetLayout) view.findViewById(R.id.bottom_sheet);
-        //sheetLayout.setFab(addButton);
-        //sheetLayout.setFabAnimationEndListener(this);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -249,10 +249,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
 
                 if (task.getState().equals(Config.STATE_DONE) && (!task.workerIsMe() && !task.ownerIsMe()))
                     v.findViewById(R.id.imageButtonDelete).setVisibility(View.INVISIBLE);
-                //TODO refactor this code above. It works but gosh it's not supposed to be written like that
-
-
-                //ProfilePictureView profilePictureView = (ProfilePictureView) v.findViewById(R.id.owner);
 
                 showTaskInformation(task, v);
 
@@ -299,6 +295,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         CurrentUser currentUser = CurrentUser.getInstance();
         changeTaskStatus(task, nextState, currentUser.getFacebook_id());
 
+        final boolean[] dismiss = {false};
         snackbar.setAction("Undo", new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -310,10 +307,13 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
                snackbarCanceld.show();
-
+               dismiss[0] = true;
                changeTaskStatus(task, currentState);
            }
         });
+
+        //if (!dismiss[0])
+            sendNotification(task);
 
         snackbar.setCallback(new Snackbar.Callback() {
             @Override
@@ -325,6 +325,25 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         });
         snackbar.show();
 
+    }
+
+
+    public void sendNotification(final Task task){
+        class NotificationTask extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected String doInBackground(Void... p) {
+                HashMap<String, String> params = new HashMap<>();
+                GoogleCloudMessage message = new GoogleCloudMessage();
+                message.addRegId(task.getOwnerGoogleId());
+                message.createData(Config.NOTIF_TITLE, currentUser.getName() + (task.getState().equals(Config.STATE_TODO) ? Config.NOTIF_CONTENT_TASK_DOING : Config.NOTIF_CONTENT_TASK_DONE));
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendGoogleRequest(message);
+                return res;
+            }
+        }
+        NotificationTask nt = new NotificationTask();
+        nt.execute();
     }
 
     /**
@@ -411,6 +430,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
                 taskToSort.setOwner_name(jo.getString(Config.KEY_TASK_OWNER_NAME));
                 taskToSort.setDate_end(jo.getString(Config.KEY_TASK_DATE_END));
                 taskToSort.setWorker_name(jo.getString(Config.KEY_TASK_WORKER_NAME));
+                taskToSort.setOwnerGoogleId(jo.getString(Config.KEY_USER_GOOGLE_ID));
 
                 switch (taskToSort.getState()) {
                     case "TODO":
@@ -502,12 +522,10 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         String date = task.getDate_start().split(" ")[0];
         String time = task.getDate_start().split(" ")[1];
 
-        //Making multi colored text color of SnackBar text
         SpannableStringBuilder snackbarText = new SpannableStringBuilder();
         snackbarText.append("Created by ");
         int boldStart = snackbarText.length();
         snackbarText.append(task.getOwner_name());
-        //snackbarText.setSpan(new ForegroundColorSpan(Color.BLUE), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         snackbarText.setSpan(new StyleSpan(Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         snackbarText.append("\non ");
         boldStart = snackbarText.length();
@@ -557,16 +575,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         snackbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
         final Button snackbarActionButton = (Button) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-
-        //TODO Add button to dismiss, but this way the floating action button stays up..
-/*
-        snackbar.setAction("Ok", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-*/
         textView.setMaxLines(10);  // show multiple line
         snackbar.show();
     }
