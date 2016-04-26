@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/editGroupName"
         android:layout_alignParentTop="true"
-        android:text="Group name"
+        android:hint="Enter the group's name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/editKeyGenerated"
@@ -27,7 +27,6 @@
         android:id="@+id/editKeyGenerated"
         android:layout_below="@+id/editGroupName"
         android:text="Key"
-        android:editable="false"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
@@ -51,7 +50,7 @@
         android:layout_alignLeft="@+id/buttonCreateGroup"
         android:layout_alignStart="@+id/buttonCreateGroup"
         android:layout_marginTop="128dp"
-        android:text="Key"
+        android:hint="Enter the group's key"
         android:layout_alignRight="@+id/editKeyGenerated"
         android:layout_alignEnd="@+id/editKeyGenerated" />
 

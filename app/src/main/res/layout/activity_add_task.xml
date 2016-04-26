@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/titleTask"
         android:layout_weight="1"
-        android:text="Enter Task"
+        android:hint="Enter Task"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
