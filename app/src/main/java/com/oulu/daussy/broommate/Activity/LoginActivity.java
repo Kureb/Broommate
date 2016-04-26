@@ -62,7 +62,7 @@ public class LoginActivity extends Activity {
 
         //if already logged in, start next activity
         if (AccessToken.getCurrentAccessToken()!=null) {
-            populateUserWithGroup();
+            populateUserWithGroupKey();
         }
 
 
@@ -156,20 +156,6 @@ public class LoginActivity extends Activity {
         request.executeAsync();
     }
 
-    private void populateUserWithGroup() {
-        populateUserWithGroupKey();
-
-        /*
-        Intent myIntent = null;
-        if (!currentUser.getGroupKey().isEmpty()){
-            myIntent = new Intent(getApplicationContext(), MainActivity.class);
-        } else {
-            myIntent = new Intent(getApplicationContext(), GroupActivity.class);
-        }
-        startActivity(myIntent);
-        */
-    }
-
     private void fetchUser() {
         class GetJSON extends AsyncTask<Void, Void, String> {
 
@@ -187,9 +173,9 @@ public class LoginActivity extends Activity {
                 Log.d("String post", " = " + s.toString());
                 JSON_STRING = s;
                 if (!JSON_STRING.equals(Config.EMPTY_JSON)){
+                    getRegId();
                     populateGroup();
                 }
-                getRegId();
                 loading.dismiss();
             }
 
@@ -197,7 +183,6 @@ public class LoginActivity extends Activity {
             @Override
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
-//                Log.d("REQUEST", Config.URL_GET_UNIQUE_USER + currentUser.getFacebook_id().toString());
                 String s = rh.sendGetRequestParam(Config.URL_GET_UNIQUE_USER, currentUser.getFacebook_id());
                 Log.d("String in", " = " + s.toString());
                 return s;
