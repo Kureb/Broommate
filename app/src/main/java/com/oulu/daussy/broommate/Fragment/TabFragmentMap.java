@@ -178,12 +178,8 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                 }
 
                 message.createData(Config.NOTIF_TITLE, currentUser.getName() + Config.NOTIF_CONTENT_LOCATION);
-
-
-
                 RequestHandler rh = new RequestHandler();
                 String res = rh.sendGoogleRequest(message);
-
 
                 return res;
             }
@@ -237,8 +233,8 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
             }
 
-            home.setPosX(jo.isNull("posX_home") ? null : jo.getString("posX_home"));
-            home.setPosY(jo.isNull("posY_home") ? null : jo.getString("posY_home"));
+            home.setPosX(jo.isNull(Config.HOME_POSX) ? null : jo.getString(Config.HOME_POSX));
+            home.setPosY(jo.isNull(Config.HOME_POSY) ? null : jo.getString(Config.HOME_POSY));
 
             populateMap();
 
@@ -255,7 +251,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         ArrayList<MarkerOptions> markers = new ArrayList<>();
         for (int i = 0; i < users.length; i++) {
             user = users[i];
-            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null") {
+            if (user.getPosX() != null || user.getPosY() != null){
                 numberOfLocations++;
                 MarkerOptions marker = new MarkerOptions()
                         .title(user.getName())
@@ -278,8 +274,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onInfoWindowClick(Marker marker) {
                 if (!marker.getTitle().equals(Config.HOME)){
-                    String name = marker.getTitle();
-                    User userToAsk = null;
+                     User userToAsk = null;
                     for (User u:users
                             ) {
                         if (u.getName().equals(marker.getTitle()))
@@ -296,12 +291,11 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         });
 
         LatLng latLng = new LatLng(Double.parseDouble(home.getPosX()), Double.parseDouble(home.getPosY()));
-        drawMarkerWithCircle(latLng);
+        drawMarkerWithCircle(latLng, markers);
 
         /**
          * To see all the markers on the map we need to compute the center
          * position and the level of zoom
-         * TODO fix bug when just one user who has shared its location
          */
         LatLng mapCenter = new LatLng(getCenterPositionX(), getCenterPositionY());
         map.moveCamera(CameraUpdateFactory.newLatLng(mapCenter));
@@ -326,11 +320,17 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         User user;
         for (int i = 0; i < users.length; i++) {
             user = users[i];
-            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null") {
+            if (user.getPosX() != null && user.getPosY() != null) {
                 x += Double.parseDouble(user.getPosX());
             }
         }
-        x /= numberOfLocations;
+        if (home.getPosX() != null){
+            x += Double.parseDouble(home.getPosX());
+            x /= numberOfLocations+1;
+        } else {
+            x /= numberOfLocations;
+        }
+
         return x;
     }
 
@@ -339,12 +339,19 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         User user;
         for (int i = 0; i < users.length; i++) {
             user = users[i];
-            if (user.getPosX().length() > 0 && user.getPosY().length() > 0 && user.getPosX() != "null" && user.getPosY() != "null") {
+            if (user.getPosX() != null && user.getPosY()!= null) {
                 y += Double.parseDouble(user.getPosY());
             }
         }
-        y /= numberOfLocations;
+        if (home.getPosX() != null){
+            y += Double.parseDouble(home.getPosY());
+            y /= numberOfLocations+1;
+        } else {
+            y /= numberOfLocations;
+        }
+
         return y;
+
     }
 
     private void fetchPositions() {
@@ -440,7 +447,7 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         ul.execute();
     }
 
-    private void drawMarkerWithCircle(LatLng position){
+    private void drawMarkerWithCircle(LatLng position, ArrayList<MarkerOptions> markers){
         double radiusInMeters = Config.SIZE_CIRCLE;
         int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill
@@ -449,16 +456,15 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
         mCircle = map.addCircle(circleOptions);
 
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.color_icons_green_home);
-        //Bitmap b= BitmapDescriptorFactory.fromResource(R.drawable.color_icons_green_home);
         Bitmap bhalfsize=Bitmap.createScaledBitmap(icon, icon.getWidth()/12,icon.getHeight()/12, false);
 
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(position)
                 .title(Config.HOME)
-                //.rotation((float) 45.0)
                 .icon(BitmapDescriptorFactory.fromBitmap(bhalfsize));
-                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         mMarker = map.addMarker(markerOptions);
+        markers.add(markerOptions);
+
     }
 
 

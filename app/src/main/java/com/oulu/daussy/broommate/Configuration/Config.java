@@ -97,6 +97,9 @@ public class Config {
     public static final String TAG_USER_ID          =   "id";
     public static final String TAG_USER_NAME        =   "name";
 
+    public static final String HOME_POSX            =   "posX_home";
+    public static final String HOME_POSY            =   "posY_home";
+
     public static final String EMPTY_JSON           =   "{\"result\":[]}\n";
     
 }
