@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,18 +37,13 @@ import com.oulu.daussy.broommate.Model.Home;
 import com.oulu.daussy.broommate.Model.User;
 import com.oulu.daussy.broommate.R;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -207,12 +201,9 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Ask location ?
-                //String name = listView.getAdapter().getItem(position);
-                final View fview = listAdapter.getView(position, view, parent);
-                TextView user = (TextView) fview.findViewById(R.id.nameUser);
+                TextView user = (TextView) view.findViewById(R.id.nameUser);
                 String name = (String) user.getText();
-                TextView gcmid = (TextView) fview.findViewById(R.id.GCMID);
+                TextView gcmid = (TextView) view.findViewById(R.id.GCMID);
                 String gcm = (String) gcmid.getText();
 
                 if (!gcm.isEmpty() && !name.equals(currentUser.getName())){
@@ -221,7 +212,64 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 }
             }
         });
+
+
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView user = (TextView) view.findViewById(R.id.nameUser);
+                String name = (String) user.getText();
+                TextView gcmid = (TextView) view.findViewById(R.id.GCMID);
+                final String gcm = (String) gcmid.getText();
+
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteUser(gcm);
+                        onRefresh();
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                //alertDialog.setTitle(");
+                alertDialog.setMessage("Remove " + name.split(" ")[0] + " from group?");
+                alertDialog.show();
+
+                /*
+                if (!gcm.isEmpty() && !name.equals(currentUser.getName())){
+                    DialogDelUser ddu = DialogDelUser.newInstance(name.split(" ")[0], gcm);
+                    ddu.show(getFragmentManager(), "delete");
+                }*/
+                return true;
+            }
+        });
     }
+
+    public void deleteUser(final String key) {
+        class DelUser extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected String doInBackground(Void... p) {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(Config.KEY_USER_GOOGLE_ID, key);
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(Config.URL_REMOVE_USER, params);
+                return res;
+            }
+        }
+        DelUser du = new DelUser();
+        du.execute();
+    }
+
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;

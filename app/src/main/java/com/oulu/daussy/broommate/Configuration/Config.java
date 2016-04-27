@@ -32,6 +32,7 @@ public class Config {
     public static final String URL_GET_USER         =   IP_SERVER + "Broommate/getUser.php?id_group=";
     public static final String URL_GET_UNIQUE_USER  =   IP_SERVER + "Broommate/getUniqueUser.php?id_facebook=";
     public static final String URL_UPDATE_USER      =   IP_SERVER + "Broommate/updateUser.php";
+    public static final String URL_REMOVE_USER      =   IP_SERVER + "Broommate/removeUser.php";
 
     public static final String PROJECT_NUMBER       =   "731765884851";
     public static final String URL_GOOGLE_CLOUD_MSG =   "https://android.googleapis.com/gcm/send";

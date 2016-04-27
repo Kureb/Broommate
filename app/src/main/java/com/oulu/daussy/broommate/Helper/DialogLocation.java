@@ -40,7 +40,7 @@ public class DialogLocation extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         String user = getArguments().getString("name");
         String lastLetter = user.substring(user.length() - 1);
-        String s = lastLetter.equals("' ") ? "'" : "'s ";
+        String s = lastLetter.equals("s") ? "' " : "'s ";
 
         final String key = getArguments().getString("gid");
         builder.setMessage("Ask for " + user + s + " location?")
