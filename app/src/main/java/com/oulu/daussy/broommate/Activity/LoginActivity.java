@@ -45,7 +45,8 @@ public class LoginActivity extends Activity {
     private String JSON_STRING;
     private GoogleCloudMessaging gcm;
     private String gcmid;
-    private String PROJECT_NUMBER = "731765884851";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -264,7 +265,7 @@ public class LoginActivity extends Activity {
                     if (gcm == null) {
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
-                    gcmid = gcm.register(PROJECT_NUMBER);
+                    gcmid = gcm.register(Config.PROJECT_NUMBER);
                     msg = "Device registered, registration ID=" + gcmid;
                     Log.d("GCM",  msg);
 
