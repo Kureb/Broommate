@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   //        VALUES ('$key', '$name')";
 
   $sql = "INSERT INTO `group` ( `key`, `name`)
-          VALUES ('$key', '$name')";
+          VALUES ('$key', '$name');";
 
 
   //echo $sql;
@@ -20,10 +20,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   require_once('dbConnect.php');
 
   if (mysqli_query($con, $sql)) {
-    echo 'Group added successfully';
+    //echo 'Group added successfully';
+    $sql = "INSERT INTO `home` (`group_id`)
+            VALUES ('$key')";
+    if (mysqli_query($con, $sql))
+      echo 'Group added successfully';
   } else {
     echo 'Could not add group';
   }
+
+
+
 
   mysqli_close($con);
 
