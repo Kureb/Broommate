@@ -75,7 +75,11 @@ public class ListAdapter extends BaseAdapter {
             userName.setTypeface(null, Typeface.BOLD);
         userPicture.setProfileId(user.getFacebook_id());
         String pos = user.isHome() ? "Localised at home " : "Localised not at home ";
-        userPosition.setText(pos + user.timeAgo());
+        if (user.getPosX().equals("null") || user.getPosY().equals("null")) {
+            pos = "Not localised yet.";
+            userPosition.setText(pos);
+        } else
+            userPosition.setText(pos + user.timeAgo());
 
         return convertView;
     }
