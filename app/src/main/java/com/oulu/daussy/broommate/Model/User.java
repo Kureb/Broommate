@@ -104,7 +104,7 @@ public class User {
 
     public boolean isHome() {
         Home home = Home.getInstance();
-        if (home.getPosX() == (null) || home.getPosY() == (null) || this.getPosX() == (null) || this.getPosY() == (null))
+        if (home.getPosX() == (null) || home.getPosY() == (null) || home.getPosX().isEmpty() || home.getPosY().isEmpty() || this.getPosX() == (null) || this.getPosY() == (null))
             return false;
 
 

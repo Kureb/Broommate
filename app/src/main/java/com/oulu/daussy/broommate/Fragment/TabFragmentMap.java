@@ -383,8 +383,10 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
 
     private void updateHome() {
-        currentUser.setPosX(latitude);
-        currentUser.setPosY(longitude);
+        if (latitude == null || longitude == null){
+            Toast.makeText(getContext(), "Location not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         class UpdateHomeLocation extends AsyncTask<Void, Void, String> {
 
@@ -417,6 +419,11 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
 
     private void updateLocation() {
+        if (latitude == null || longitude == null){
+            Toast.makeText(getContext(), "Location not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         currentUser.setPosX(latitude);
         currentUser.setPosY(longitude);
 

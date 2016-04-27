@@ -183,8 +183,8 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 user.setGCMid(jo.getString(Config.KEY_USER_GOOGLE_ID));
                 listUser.add(user);
             }
-            //String test = ;
-            home.setPosX(jo.isNull(Config.HOME_POSX) ? null : jo.getString(Config.HOME_POSY));
+
+            home.setPosX(jo.isNull(Config.HOME_POSX) ? null : jo.getString(Config.HOME_POSX));
             home.setPosY(jo.isNull(Config.HOME_POSY) ? null : jo.getString(Config.HOME_POSY));
             home.setName(jo.isNull(Config.KEY_USER_G_NAME) ? null : jo.getString(Config.KEY_USER_G_NAME));
             groupName.setText(home.getName());
@@ -240,15 +240,10 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 });
 
                 AlertDialog alertDialog = alertDialogBuilder.create();
-                //alertDialog.setTitle(");
                 alertDialog.setMessage("Remove " + name.split(" ")[0] + " from group?");
                 alertDialog.show();
 
-                /*
-                if (!gcm.isEmpty() && !name.equals(currentUser.getName())){
-                    DialogDelUser ddu = DialogDelUser.newInstance(name.split(" ")[0], gcm);
-                    ddu.show(getFragmentManager(), "delete");
-                }*/
+
                 return true;
             }
         });
