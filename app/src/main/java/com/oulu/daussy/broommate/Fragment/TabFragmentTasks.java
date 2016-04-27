@@ -340,7 +340,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.setTitle(previousState.equals(Config.STATE_DELETED) ? "Delete task?" : "Put back in " + previousState + "?");
+        alertDialog.setMessage(previousState.equals(Config.STATE_DELETED) ? "Delete task?" : "Put back in " + previousState + "?");
         alertDialog.show();
 
 
