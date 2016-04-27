@@ -69,8 +69,12 @@ public class ListAdapter extends BaseAdapter {
         TextView userPosition = (TextView) convertView
                 .findViewById(R.id.positionUserText);
 
+        TextView userGCMID = (TextView) convertView
+                .findViewById(R.id.GCMID);
+
 
         userName.setText(user.getName());
+        userGCMID.setText(user.getGCMid());
         if (user.getName().equals(currentUser.getName()))
             userName.setTypeface(null, Typeface.BOLD);
         userPicture.setProfileId(user.getFacebook_id());

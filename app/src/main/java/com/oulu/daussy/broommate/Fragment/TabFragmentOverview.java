@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.melnykov.fab.FloatingActionButton;
 import com.oulu.daussy.broommate.Configuration.Config;
 import com.oulu.daussy.broommate.Configuration.RequestHandler;
+import com.oulu.daussy.broommate.Helper.DialogLocation;
 import com.oulu.daussy.broommate.Helper.ListAdapter;
 import com.oulu.daussy.broommate.Model.CurrentUser;
 import com.oulu.daussy.broommate.Model.Home;
@@ -127,28 +129,6 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 dialog.setTitle("Share group " + home.getName());
                 dialog.show();
 
-
-                /*
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Want a new user?");
-                builder.setMessage("The key to share is:\n" + currentUser.getGroupKey())
-                        .setPositiveButton("Copy", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("label", currentUser.getGroupKey());
-                                clipboard.setPrimaryClip(clip);
-                                Toast.makeText(getContext(), "Copied in clipboard, ready to share", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                            }
-                        });
-                // Create the AlertDialog object and return it
-                builder.create();
-                builder.show();
-                */
             }
         });
 
@@ -206,12 +186,13 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
                 user.setPosX(jo.isNull(Config.KEY_USER_POSX) ? null : jo.getString(Config.KEY_USER_POSX));
                 user.setPosY(jo.isNull(Config.KEY_USER_POSY) ? null : jo.getString(Config.KEY_USER_POSY));
                 user.setLastUpdatePos(jo.getString(Config.KEY_USER_LAST_UPDATE));
+                user.setGCMid(jo.getString(Config.KEY_USER_GOOGLE_ID));
                 listUser.add(user);
             }
             //String test = ;
-            home.setPosX(jo.isNull("posX_home") ? null : jo.getString("posX_home"));
-            home.setPosY(jo.isNull("posY_home") ? null : jo.getString("posY_home"));
-            home.setName(jo.isNull("group_name") ? null : jo.getString("group_name"));
+            home.setPosX(jo.isNull(Config.HOME_POSX) ? null : jo.getString(Config.HOME_POSY));
+            home.setPosY(jo.isNull(Config.HOME_POSY) ? null : jo.getString(Config.HOME_POSY));
+            home.setName(jo.isNull(Config.KEY_USER_G_NAME) ? null : jo.getString(Config.KEY_USER_G_NAME));
             groupName.setText(home.getName());
             
         } catch (JSONException e) {
@@ -223,6 +204,23 @@ public class TabFragmentOverview extends Fragment implements SwipeRefreshLayout.
         listAdapter = new ListAdapter(getContext(), listUser);
         listView.setAdapter(listAdapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Ask location ?
+                //String name = listView.getAdapter().getItem(position);
+                final View fview = listAdapter.getView(position, view, parent);
+                TextView user = (TextView) fview.findViewById(R.id.nameUser);
+                String name = (String) user.getText();
+                TextView gcmid = (TextView) fview.findViewById(R.id.GCMID);
+                String gcm = (String) gcmid.getText();
+
+                if (!gcm.isEmpty() && !name.equals(currentUser.getName())){
+                    DialogLocation dl = DialogLocation.newInstance(name.split(" ")[0], gcm);
+                    dl.show(getFragmentManager(), "location");
+                }
+            }
+        });
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

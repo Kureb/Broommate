@@ -91,6 +91,7 @@ public class Config {
     public static final String KEY_USER_POSY        =   "posY";
     public static final String KEY_USER_LAST_UPDATE =   "last_update";
     public static final String KEY_USER_GROUP_NAME  =   "name";
+    public static final String KEY_USER_G_NAME      =   "group_name";
     public static final String KEY_USER_GROUP_KEY   =   "key";
     public static final String KEY_USER_GOOGLE_ID   =   "google_id";
 
