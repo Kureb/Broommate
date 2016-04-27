@@ -221,6 +221,7 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
+                loading.dismiss();
                 Log.d("String post", " = " + s.toString());
                 JSON_STRING = s;
                 if (!JSON_STRING.equals(Config.EMPTY_JSON)){
@@ -228,7 +229,6 @@ public class GroupActivity extends AppCompatActivity {
                 } else {
                     populateView(View.VISIBLE);
                 }
-                loading.dismiss();
             }
 
 
