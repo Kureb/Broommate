@@ -329,8 +329,6 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 changeTaskStatus(task, previousState);
-                if (!task.getOwner().equals(currentUser.getName()))
-                    sendNotification(task);
                 onRefresh();
             }
         });
@@ -342,7 +340,7 @@ public class TabFragmentTasks extends Fragment implements SwipeRefreshLayout.OnR
         });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.setTitle("Put back in " + previousState + "?");
+        alertDialog.setTitle(previousState.equals(Config.STATE_DELETED) ? "Delete task?" : "Put back in " + previousState + "?");
         alertDialog.show();
 
 
