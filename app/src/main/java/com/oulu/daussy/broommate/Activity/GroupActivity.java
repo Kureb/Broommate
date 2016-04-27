@@ -48,7 +48,6 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group);
 
         fetchUser();
-
         buttonNewGroup  = (Button)   findViewById(R.id.buttonCreateGroup);
         buttonJoinGroup = (Button)   findViewById(R.id.buttonJoinGroup);
         textGroupName   = (EditText) findViewById(R.id.editGroupName);
@@ -63,7 +62,7 @@ public class GroupActivity extends AppCompatActivity {
         webView.setBackgroundColor(Color.TRANSPARENT);
 
 
-        populateView(View.INVISIBLE);
+        //populateView(View.INVISIBLE);
 
         qr.setOnClickListener(new View.OnClickListener() {
             @Override

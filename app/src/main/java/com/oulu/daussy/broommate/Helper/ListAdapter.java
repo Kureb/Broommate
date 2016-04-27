@@ -74,12 +74,14 @@ public class ListAdapter extends BaseAdapter {
         if (user.getName().equals(currentUser.getName()))
             userName.setTypeface(null, Typeface.BOLD);
         userPicture.setProfileId(user.getFacebook_id());
-        String pos = user.isHome() ? "Localised at home " : "Localised not at home ";
-        if (user.getPosX().equals("null") || user.getPosY().equals("null")) {
+        String pos = "";
+        if (user.getPosX() == (null) || user.getPosY() == (null)) {
             pos = "Not localised yet.";
             userPosition.setText(pos);
-        } else
+        } else {
+            pos = user.isHome() ? "Localised at home " : "Localised not at home ";
             userPosition.setText(pos + user.timeAgo());
+        }
 
         return convertView;
     }

@@ -104,7 +104,7 @@ public class User {
 
     public boolean isHome() {
         Home home = Home.getInstance();
-        if (home.getPosX().equals("null") || home.getPosY().equals("null") || this.getPosX().equals("null") || this.getPosY().equals("null"))
+        if (home.getPosX() == (null) || home.getPosY() == (null) || this.getPosX() == (null) || this.getPosY() == (null))
             return false;
 
 
@@ -116,18 +116,6 @@ public class User {
 
 
         boolean bool = false;
-
-        /*
-        double threshold = 0.000002;
-
-        boolean closeX = ((posX <= (posX_home + threshold)) || (posX <= (posX_home - threshold)));
-        boolean closeY = ((posY <= (posY_home + threshold)) || (posY <= (posY_home - threshold)));
-
-        bool = closeX && closeY;
-
-        return bool;
-
-*/
 
         //Circle mCircle;
         float[] distance;
@@ -152,7 +140,7 @@ public class User {
         try {
             Date dateUpdated = sdf.parse(datetime);
             String nowS = sdf.format(new Date());
-            Date now = sdf.parse(nowS); //Wrong date, something is wrong with hours, TODO fix it
+            Date now = sdf.parse(nowS);
 
             long time_elapsed    = now.getTime() - dateUpdated.getTime();
             time_elapsed    = time_elapsed / 1000; //millisecond to second

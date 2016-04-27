@@ -227,9 +227,8 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
                 user.setId(Integer.parseInt(jo.getString(Config.KEY_USER_ID)));
                 user.setFacebook_id(jo.getString(Config.KEY_USER_FACEBOOK_ID));
                 user.setName(jo.getString(Config.KEY_USER_NAME));
-                //user.setGroup_id(Integer.parseInt(jo.getString(Config.KEY_USER_GROUP_ID)));
-                user.setPosX(jo.getString(Config.KEY_USER_POSX));
-                user.setPosY(jo.getString(Config.KEY_USER_POSY));
+                user.setPosX(jo.isNull(Config.KEY_USER_POSX) ? null : jo.getString(Config.KEY_USER_POSX));
+                user.setPosY(jo.isNull(Config.KEY_USER_POSY) ? null : jo.getString(Config.KEY_USER_POSY));
                 user.setLastUpdatePos(jo.getString(Config.KEY_USER_LAST_UPDATE));
                 user.setGCMid(jo.getString(Config.KEY_USER_GOOGLE_ID));
 
@@ -238,8 +237,8 @@ public class TabFragmentMap extends Fragment implements SwipeRefreshLayout.OnRef
 
             }
 
-            home.setPosX(jo.getString("posX_home"));
-            home.setPosY(jo.getString("posY_home"));
+            home.setPosX(jo.isNull("posX_home") ? null : jo.getString("posX_home"));
+            home.setPosY(jo.isNull("posY_home") ? null : jo.getString("posY_home"));
 
             populateMap();
 
