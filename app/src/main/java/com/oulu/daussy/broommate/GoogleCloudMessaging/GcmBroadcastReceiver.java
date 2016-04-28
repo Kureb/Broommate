@@ -1,6 +1,7 @@
 package com.oulu.daussy.broommate.GoogleCloudMessaging;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

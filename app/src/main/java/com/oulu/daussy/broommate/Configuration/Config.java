@@ -43,8 +43,8 @@ public class Config {
 
     public static final String NOTIF_TITLE              =   "Request from Broommate";
     public static final String NOTIF_CONTENT_LOCATION   =   " asks for your location";
-    public static final String NOTIF_CONTENT_TASK_DOING =   " is doing a task you have added";
-    public static final String NOTIF_CONTENT_TASK_DONE  =   " has done a task you have added";
+    public static final String NOTIF_CONTENT_TASK_DOING =   " is doing a task you've added";
+    public static final String NOTIF_CONTENT_TASK_DONE  =   " has done a task you've added";
     public static final String HOME                     =   "Home";
 
     public static final String STATE_TODO           =   "TODO";

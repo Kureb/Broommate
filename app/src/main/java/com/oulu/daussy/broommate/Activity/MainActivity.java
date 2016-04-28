@@ -1,5 +1,7 @@
 package com.oulu.daussy.broommate.Activity;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -86,7 +88,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
         String message = intent.getStringExtra(GcmMessageHandler.EXTRA_MESSAGE);
-        viewPager.setCurrentItem(message.equals("location") ? 1 : 2);
+        if (message != null) {
+            viewPager.setCurrentItem(message.equals("location") ? 1 : 2);
+            int notificationId = intent.getIntExtra("notificationId", 1);
+            NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.cancel(notificationId);
+        }
     }
 
 

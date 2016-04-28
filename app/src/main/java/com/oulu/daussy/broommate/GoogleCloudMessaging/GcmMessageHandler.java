@@ -56,11 +56,44 @@ public class GcmMessageHandler extends IntentService {
 
     public void makeNotification() {
 
-        NotificationCompat.Builder builder =
+        int notificationId = 1;
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra("notificationId", notificationId);
+        String message = content.contains("task") ? "tasks" : "location";
+        resultIntent.putExtra(EXTRA_MESSAGE, message);
+
+        PendingIntent resultPendingDismiss =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        new Intent(),
+                        0);
+
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        NotificationCompat.Builder builder = content.contains("location") ?
                 new NotificationCompat.Builder(this)
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setSmallIcon(R.drawable.icon)
                         .setContentTitle(title)
-                        .setContentText(content);
+                        .setContentText(content)
+                        .setAutoCancel(true)
+                        .addAction(R.drawable.ic_close_white_36dp, "Dismiss", resultPendingDismiss)
+                        .addAction(R.drawable.ic_gps_fixed_white_36dp, "Share", resultPendingIntent)
+                :
+                new NotificationCompat.Builder(this)
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setSmallIcon(R.drawable.icon)
+                        .setContentTitle(title)
+                        .setContentText(content)
+                        .setAutoCancel(true);
 
         //Vibration
         builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
@@ -72,26 +105,8 @@ public class GcmMessageHandler extends IntentService {
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         builder.setSound(alarmSound);
 
-
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        String message = content.contains("task") ? "tasks" : "location";
-        resultIntent.putExtra(EXTRA_MESSAGE, message);
-
-        // Because clicking the notification opens a new ("special") activity, there's
-        // no need to create an artificial back stack.
-        PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        builder.setContentIntent(resultPendingIntent);
-
-        int mNotificationId = 001;
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(mNotificationId, builder.build());
+        mNotifyMgr.notify(notificationId, builder.build());
 
     }
 }
