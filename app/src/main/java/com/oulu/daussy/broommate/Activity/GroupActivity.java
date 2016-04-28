@@ -15,6 +15,7 @@ import android.view.animation.Interpolator;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class GroupActivity extends AppCompatActivity {
     private EditText textKeyJoinGroup;
     private String JSON_STRING;
     private WebView webView;
-    private Button qr;
+    private ImageButton qr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class GroupActivity extends AppCompatActivity {
         buttonJoinGroup = (Button)   findViewById(R.id.buttonJoinGroup);
         textGroupName   = (EditText) findViewById(R.id.editGroupName);
         textKeyJoinGroup = (EditText) findViewById(R.id.editKeyJoin);
-        qr = (Button) findViewById(R.id.qr);
+        qr = (ImageButton) findViewById(R.id.qr);
 
 
         String htmlText = "<html><body style=\"text-align:justify\"> %s </body></html>";
@@ -68,10 +69,9 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-
-                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-                startActivityForResult(intent, 1);
+                    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                    startActivityForResult(intent, 1);
                 } catch (ActivityNotFoundException e) {
                     Toast.makeText(getApplicationContext(), "No QR reader app installed", Toast.LENGTH_LONG).show();
                 }
@@ -150,27 +150,6 @@ public class GroupActivity extends AppCompatActivity {
         ng.execute();
     }
 
-/*
-    public void checkExistGroup(final String key) {
-        class CheckGroup extends AsyncTask<Void, Void, String> {
-
-            @Override
-            protected String doInBackground(Void... p) {
-                HashMap<String, String> params = new HashMap<>();
-
-                params.put(Config.KEY_USER_GROUP_ID, key);
-
-                RequestHandler rh = new RequestHandler();
-                String res = rh.sendPostRequest(Config.URL_CHECK_GROUP, params);
-
-                return res;
-            }
-        }
-
-        CheckGroup cg = new CheckGroup();
-        cg.execute();
-    }
-    */
 
     public void joinGroup(final String key) {
         //TODO check if group really exists

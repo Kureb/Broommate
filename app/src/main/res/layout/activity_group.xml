@@ -88,7 +88,7 @@
         android:layout_alignRight="@+id/editKeyJoin"
         android:layout_alignEnd="@+id/editKeyJoin" />
 
-    <Button
+    <ImageButton
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,7 +98,9 @@
         android:layout_alignRight="@+id/editKeyJoin"
         android:layout_alignEnd="@+id/editKeyJoin"
         android:backgroundTint="@color/colorPrimary"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:src="@drawable/camera"
+        android:layout_above="@+id/webview" />
 
 
 </RelativeLayout>
