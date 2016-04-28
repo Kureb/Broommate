@@ -24,6 +24,7 @@ import com.oulu.daussy.broommate.R;
  */
 public class GcmMessageHandler extends IntentService {
 
+    public static final String EXTRA_MESSAGE = "com.daussy.oulu.Broommate.MESSAGE";
     String title;
     String content;
     private Handler handler;
@@ -33,7 +34,6 @@ public class GcmMessageHandler extends IntentService {
 
     @Override
     public void onCreate() {
-        // TODO Auto-generated method stub
         super.onCreate();
         handler = new Handler();
     }
@@ -74,6 +74,8 @@ public class GcmMessageHandler extends IntentService {
 
 
         Intent resultIntent = new Intent(this, MainActivity.class);
+        String message = content.contains("task") ? "tasks" : "location";
+        resultIntent.putExtra(EXTRA_MESSAGE, message);
 
         // Because clicking the notification opens a new ("special") activity, there's
         // no need to create an artificial back stack.
