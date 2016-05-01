@@ -77,7 +77,8 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <activity android:name=".Activity.GroupActivity"></activity>
+        <activity android:name=".Activity.GroupActivity"
+            android:windowSoftInputMode="stateHidden"></activity>
 
 
         <receiver android:name=".Helper.SimpleWidgetProvider" >
